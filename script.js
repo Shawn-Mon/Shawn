@@ -30,3 +30,30 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// Custom Cursor
+const cursorDot = document.querySelector('.cursor-dot');
+const cursorOutline = document.querySelector('.cursor-outline');
+
+window.addEventListener('mousemove', (e) => {
+    const posX = e.clientX;
+    const posY = e.clientY;
+
+    cursorDot.style.left = `${posX}px`;
+    cursorDot.style.top = `${posY}px`;
+
+    cursorOutline.animate({
+        left: `${posX}px`,
+        top: `${posY}px`
+    }, { duration: 500, fill: "forwards" });
+});
+
+const interactiveElements = document.querySelectorAll('a, button, .btn, .card-btn, .logo');
+interactiveElements.forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+        document.body.classList.add('cursor-hover');
+    });
+    el.addEventListener('mouseleave', () => {
+        document.body.classList.remove('cursor-hover');
+    });
+});
