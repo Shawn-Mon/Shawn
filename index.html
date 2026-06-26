@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <meta name="description" content="A dynamic and premium personal portfolio.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Portfolio</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <h1 class="fade-in">Hi, I'm <span class="gradient-text">A Creator</span></h1>
+            <p class="fade-in delay">Building digital experiences that inspire.</p>
+            <a href="#projects" class="btn fade-in delay-2">View My Work</a>
+        </section>
+
+        <section id="about" class="about hidden">
+            <h2>About Me</h2>
+            <div class="glass-card">
+                <p>I am a passionate creator who loves turning complex problems into simple, beautiful, and intuitive designs.</p>
+            </div>
+        </section>
+
+        <section id="projects" class="projects hidden">
+            <h2>Featured Projects</h2>
+            <div class="project-grid">
+                <div class="project-card glass-card">
+                    <h3>Project One</h3>
+                    <p>An amazing web application built with pure web technologies.</p>
+                </div>
+                <div class="project-card glass-card">
+                    <h3>Project Two</h3>
+                    <p>A beautiful interactive dashboard with smooth animations.</p>
+                </div>
+                <div class="project-card glass-card">
+                    <h3>Project Three</h3>
+                    <p>A sleek mobile-first landing page with high performance.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact hidden">
+            <h2>Let's Connect</h2>
+            <div class="glass-card contact-card">
+                <p>Have an exciting project in mind? Let's build something great together.</p>
+                <a href="mailto:hello@example.com" class="btn">Get in Touch</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
