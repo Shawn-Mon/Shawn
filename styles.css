@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,900&family=JetBrains+Mono:wght@400;800&display=swap');
+
 :root {
-    --bg-color: #000000;
-    --text-color: #ffffff;
+    --bg-color: #f3f3f1;
+    --text-color: #1a1a1a;
+    --border-color: #1a1a1a;
+    --primary: #6366f1; /* Indigo */
+    --accent-yellow: #fde047;
+    --accent-pink: #f472b6;
+    --accent-green: #4ade80;
 }
 
 * {
@@ -10,13 +17,41 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Bricolage Grotesque', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
-    line-height: 1.4;
+    line-height: 1.5;
     overflow-x: hidden;
     scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Marquee */
+.marquee-container {
+    background-color: var(--text-color);
+    color: white;
+    padding: 0.75rem 0;
+    overflow: hidden;
+    border-bottom: 4px solid var(--border-color);
+    display: flex;
+    white-space: nowrap;
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 /* Navbar */
@@ -25,158 +60,220 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 2rem 5%;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    background: var(--bg-color);
-    border-bottom: 4px solid var(--text-color);
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .logo {
-    font-size: 2.5rem;
+    background-color: var(--primary);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    font-size: 1.5rem;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: -2px;
+    border: 4px solid var(--border-color);
+    box-shadow: 4px 4px 0px var(--border-color);
+    transform: rotate(-2deg);
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.logo:hover {
+    transform: rotate(0deg);
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 3rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .nav-links a {
+    background-color: white;
     color: var(--text-color);
     text-decoration: none;
     font-weight: 900;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--border-color);
+    box-shadow: 4px 4px 0px var(--border-color);
     transition: all 0.2s;
 }
 
 .nav-links a:hover {
-    background-color: var(--text-color);
-    color: var(--bg-color);
-    padding: 0.2rem 0.5rem;
-    margin: -0.2rem -0.5rem;
+    background-color: var(--accent-yellow);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--border-color);
 }
 
-/* Typography & Utilities */
+/* Container */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 5%;
+}
+
+/* Typography */
 h1 {
-    font-size: 8rem;
-    font-weight: 900;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    line-height: 0.9;
-    letter-spacing: -4px;
-}
-
-.section-title {
     font-size: 5rem;
     font-weight: 900;
-    margin-bottom: 3rem;
+    line-height: 0.9;
+    margin-bottom: 2rem;
     text-transform: uppercase;
-    letter-spacing: -3px;
-    border-bottom: 8px solid var(--text-color);
-    display: inline-block;
-    padding-bottom: 0.5rem;
+    font-style: italic;
 }
 
+h1 span.highlight {
+    background-color: var(--accent-yellow);
+    padding: 0 1rem;
+    display: inline-block;
+    border: 4px solid var(--border-color);
+    box-shadow: 8px 8px 0px var(--border-color);
+    transform: rotate(2deg);
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+}
+
+/* Neo-Brutalist Button */
 .btn {
     display: inline-block;
-    padding: 1.5rem 4rem;
-    background: var(--bg-color);
-    color: var(--text-color);
-    text-decoration: none;
-    border: 4px solid var(--text-color);
-    font-weight: 900;
+    background: var(--text-color);
+    color: white;
+    border: 4px solid var(--border-color);
+    box-shadow: 8px 8px 0px var(--primary);
+    padding: 1.5rem 3rem;
     font-size: 1.5rem;
+    font-weight: 900;
     text-transform: uppercase;
+    text-decoration: none;
     transition: all 0.2s;
     cursor: pointer;
-    margin-top: 3rem;
 }
 
 .btn:hover {
-    background: var(--text-color);
-    color: var(--bg-color);
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px var(--primary);
 }
 
 /* Sections */
 section {
-    min-height: 100vh;
-    padding: 10rem 5% 5rem;
+    padding: 6rem 0;
+    border-top: 4px solid var(--border-color);
+    margin-top: 4rem;
+}
+
+.hero {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 2rem;
+}
+
+/* Brutal Cards */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 3rem;
+}
+
+.brutal-card {
+    background: white;
+    border: 4px solid var(--border-color);
+    box-shadow: 8px 8px 0px var(--border-color);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
+}
+
+.brutal-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px var(--border-color);
+}
+
+.card-image {
+    height: 200px;
+    background: #0f1117;
+    border-bottom: 4px solid var(--border-color);
+    position: relative;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
-/* Hero Section */
-.hero {
-    align-items: flex-start;
-    text-align: left;
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
 }
 
-.hero p {
+.card-content {
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-tag {
+    background: var(--accent-yellow);
+    border: 2px solid var(--border-color);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}
+
+.brutal-card h3 {
     font-size: 2rem;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: -1px;
+    font-style: italic;
+    margin-bottom: 1rem;
 }
 
-/* Brutal Boxes */
-.brutal-box {
-    border: 4px solid var(--text-color);
-    padding: 4rem;
-    background: var(--bg-color);
+.brutal-card p {
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 2rem;
+}
+
+.card-btn {
+    margin-top: auto;
+    background: var(--text-color);
+    color: white;
+    border: 2px solid var(--border-color);
+    padding: 1rem;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-decoration: none;
     transition: all 0.2s;
 }
 
-.brutal-box:hover {
-    transform: translate(10px, -10px);
-    box-shadow: -10px 10px 0 var(--text-color);
-}
-
-.about .brutal-box {
-    max-width: 1000px;
-    font-size: 2rem;
-    font-weight: 900;
-    line-height: 1.2;
-    text-transform: uppercase;
-}
-
-/* Projects Section */
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 4rem;
-    width: 100%;
-}
-
-.project-card h3 {
-    font-size: 3rem;
-    font-weight: 900;
-    margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: -2px;
-}
-
-.project-card p {
-    font-size: 1.2rem;
-    font-weight: 400;
-}
-
-/* Contact Section */
-.contact-card {
-    max-width: 800px;
-}
-
-.contact-card p {
-    font-size: 2.5rem;
-    font-weight: 900;
-    margin-bottom: 2rem;
-    line-height: 1;
+.card-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--primary);
 }
 
 /* Animations */
@@ -185,7 +282,6 @@ section {
     transform: translateY(20px);
     animation: revealAnim 0.5s ease forwards;
 }
-
 .delay { animation-delay: 0.2s; }
 .delay-2 { animation-delay: 0.4s; }
 
@@ -205,4 +301,11 @@ section {
 .visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 3rem; }
+    h2 { font-size: 2.5rem; }
+    .navbar { flex-direction: column; gap: 2rem; }
+    .nav-links { justify-content: center; }
 }
