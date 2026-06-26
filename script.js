@@ -31,22 +31,35 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Custom Cursor
+// Custom Cursor (Smooth LERP)
 const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
+const cursorWrapper = document.querySelector('.cursor-wrapper');
+
+let mouseX = 0, mouseY = 0;
+let dotX = 0, dotY = 0;
+let outlineX = 0, outlineY = 0;
 
 window.addEventListener('mousemove', (e) => {
-    const posX = e.clientX;
-    const posY = e.clientY;
-
-    cursorDot.style.left = `${posX}px`;
-    cursorDot.style.top = `${posY}px`;
-
-    cursorOutline.animate({
-        left: `${posX}px`,
-        top: `${posY}px`
-    }, { duration: 500, fill: "forwards" });
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 });
+
+function animateCursor() {
+    // Fast LERP for the dot
+    dotX += (mouseX - dotX) * 0.5;
+    dotY += (mouseY - dotY) * 0.5;
+    
+    // Slower LERP for the outline wrapper for that buttery smooth lag
+    outlineX += (mouseX - outlineX) * 0.15;
+    outlineY += (mouseY - outlineY) * 0.15;
+
+    // Offset dot by half its size (10px / 2)
+    cursorDot.style.transform = `translate(${dotX - 5}px, ${dotY - 5}px)`;
+    cursorWrapper.style.transform = `translate(${outlineX}px, ${outlineY}px)`;
+
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
 
 const interactiveElements = document.querySelectorAll('a, button, .btn, .card-btn, .logo');
 interactiveElements.forEach((el) => {
