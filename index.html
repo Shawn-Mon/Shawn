@@ -3,18 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <title>Shawn — Developer Portfolio</title>
     <meta name="description" content="A dynamic and premium personal portfolio.">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Custom Cursor -->
+
+    <div id="progress-bar"></div>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="noise-overlay"></div>
+
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
     <div class="cursor-dot"></div>
     <div class="cursor-wrapper">
         <div class="cursor-outline"></div>
     </div>
 
-    <!-- Marquee -->
     <div class="marquee-container">
         <div class="marquee-content">
             • A CREATIVE DEVELOPER • SHIPPING DIGITAL PRODUCTS • BASED ON EARTH • A CREATIVE DEVELOPER • SHIPPING DIGITAL PRODUCTS • BASED ON EARTH • A CREATIVE DEVELOPER • SHIPPING DIGITAL PRODUCTS • BASED ON EARTH • 
@@ -22,7 +34,7 @@
     </div>
 
     <nav class="navbar">
-        <div class="logo">PORTFOLIO.</div>
+        <div class="logo">SHAWN.</div>
         <ul class="nav-links">
             <li><a href="#home">HOME</a></li>
             <li><a href="#work">WORK</a></li>
@@ -34,26 +46,20 @@
     <main>
         <section id="home" class="hero">
             <div class="hero-content">
-                <h1 class="reveal">I'm <span class="highlight">A Creator</span><br>I build stuff<br>with code.</h1>
-                <p class="subtitle reveal delay">Full-Stack Developer | Designer | Problem Solver</p>
-                <a href="#work" class="btn reveal delay-2">WORK WITH ME →</a>
+                <h1 class="reveal">I'm <span class="highlight">Shawn</span><br>I build stuff<br>with code.</h1>
+                <p class="subtitle reveal delay" id="typewriter"></p>
+                <a href="#work" class="btn magnetic-btn reveal delay-2">WORK WITH ME →</a>
             </div>
-            <div class="hero-profile reveal delay">
+            <div class="hero-profile reveal delay" id="tilt-card">
                 <div class="profile-container">
-                    <!-- Layer 1: Indigo background rotated left -->
                     <div class="profile-layer profile-layer-bg"></div>
-                    <!-- Layer 2: Main card rotated right -->
                     <div class="profile-layer profile-layer-main">
                         <div class="profile-inner">
-                            <!-- Layer 3: Changing background -->
                             <div class="profile-inner-bg"></div>
-                            <!-- Layer 4: Dots -->
                             <div class="profile-dots"></div>
-                            <!-- Layer 5: Image -->
                             <div class="profile-img-wrapper">
-                                <img src="assets/profile.png" alt="Profile Picture" class="profile-img-cutout">
+                                <img src="assets/shawn.png" alt="Shawn" class="profile-img-cutout">
                             </div>
-                            <!-- Floating Badges -->
                             <div class="badge badge-bottom">Creator</div>
                             <div class="badge badge-top">Full Stack</div>
                         </div>
@@ -67,37 +73,34 @@
             <div class="card-grid">
                 <div class="brutal-card">
                     <div class="card-image" style="background: var(--accent-yellow);">
-                        <!-- Placeholder for image -->
                     </div>
                     <div class="card-content">
                         <span class="card-tag">Web App</span>
                         <h3>Project One</h3>
                         <p>A full-stack web application designed with an uncompromising dark neo-brutalist aesthetic.</p>
-                        <a href="#" class="card-btn">OPEN_INTERFACE</a>
+                        <a href="#" class="card-btn magnetic-btn">OPEN_INTERFACE</a>
                     </div>
                 </div>
                 
                 <div class="brutal-card">
                     <div class="card-image" style="background: var(--accent-green);">
-                        <!-- Placeholder for image -->
                     </div>
                     <div class="card-content">
                         <span class="card-tag">Mobile UI</span>
                         <h3>Project Two</h3>
                         <p>An interactive dashboard that uses sharp contrasts and bold typography to stand out.</p>
-                        <a href="#" class="card-btn">OPEN_INTERFACE</a>
+                        <a href="#" class="card-btn magnetic-btn">OPEN_INTERFACE</a>
                     </div>
                 </div>
                 
                 <div class="brutal-card">
                     <div class="card-image" style="background: var(--primary);">
-                        <!-- Placeholder for image -->
                     </div>
                     <div class="card-content">
                         <span class="card-tag">SaaS</span>
                         <h3>Project Three</h3>
                         <p>A scalable software-as-a-service landing page built for high conversions and speed.</p>
-                        <a href="#" class="card-btn">OPEN_INTERFACE</a>
+                        <a href="#" class="card-btn magnetic-btn">OPEN_INTERFACE</a>
                     </div>
                 </div>
             </div>
@@ -105,12 +108,47 @@
 
         <section id="skills" class="skills hidden">
             <h2>_Tech_Stack</h2>
-            <div class="brutal-card" style="padding: 3rem; flex-direction: row; flex-wrap: wrap; gap: 1rem; box-shadow: 8px 8px 0px var(--border-color);">
-                <span class="card-tag" style="margin-bottom: 0;">HTML</span>
-                <span class="card-tag" style="margin-bottom: 0;">CSS</span>
-                <span class="card-tag" style="margin-bottom: 0;">JavaScript</span>
-                <span class="card-tag" style="margin-bottom: 0; background: var(--accent-yellow); color: #000;">React</span>
-                <span class="card-tag" style="margin-bottom: 0; background: var(--accent-green); color: #000;">Node.js</span>
+            <div class="skills-grid">
+                <div class="skill-item" data-progress="95">
+                    <div class="skill-info">
+                        <span class="skill-name">HTML</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-fill" style="--pct: 95%;"></div>
+                    </div>
+                </div>
+                <div class="skill-item" data-progress="90">
+                    <div class="skill-info">
+                        <span class="skill-name">CSS</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-fill" style="--pct: 90%;"></div>
+                    </div>
+                </div>
+                <div class="skill-item" data-progress="88">
+                    <div class="skill-info">
+                        <span class="skill-name">JavaScript</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-fill" style="--pct: 88%;"></div>
+                    </div>
+                </div>
+                <div class="skill-item" data-progress="82">
+                    <div class="skill-info">
+                        <span class="skill-name">React</span>
+                    </div>
+                    <div class="skill-bar bar-accent-yellow">
+                        <div class="skill-fill" style="--pct: 82%;"></div>
+                    </div>
+                </div>
+                <div class="skill-item" data-progress="78">
+                    <div class="skill-info">
+                        <span class="skill-name">Node.js</span>
+                    </div>
+                    <div class="skill-bar bar-accent-green">
+                        <div class="skill-fill" style="--pct: 78%;"></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -118,7 +156,7 @@
             <h2>_Uplink</h2>
             <div class="brutal-card" style="padding: 4rem; text-align: center; background: var(--accent-pink); color: #000;">
                 <p style="font-size: 2rem; font-weight: 900; margin-bottom: 2rem; color: #000;">LET'S BUILD SOMETHING MASSIVE.</p>
-                <a href="mailto:hello@example.com" class="btn" style="box-shadow: 8px 8px 0px #000; border-color: #000; color: #fff; background: #000;">EMAIL ME</a>
+                <a href="mailto:hello@example.com" class="btn magnetic-btn" style="box-shadow: 8px 8px 0px #000; border-color: #000; color: #fff; background: #000;">EMAIL ME</a>
             </div>
         </section>
     </main>
