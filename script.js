@@ -357,19 +357,6 @@ const cardObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.wcard').forEach(card => cardObserver.observe(card));
 
-// ─── SKILLS ANIMATION ──────────────────────
-const skillsSection = document.querySelector('.skills');
-const skillsObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('animated');
-      skillsObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.15 });
-
-if (skillsSection) skillsObserver.observe(skillsSection);
-
 // Skill domain stagger
 document.querySelectorAll('.skill-domain').forEach((el, i) => {
   const domainObserver = new IntersectionObserver((entries) => {
@@ -441,16 +428,6 @@ document.querySelectorAll('.wcard').forEach(card => {
   });
   card.addEventListener('mouseleave', () => {
     card.style.transform = '';
-  });
-});
-
-// ─── TECH PILL INTERACTIONS ─────────────────
-const techPills = document.querySelectorAll('.tp');
-techPills.forEach(pill => {
-  pill.addEventListener('click', () => {
-    pill.style.transition = 'all 0.1s';
-    pill.style.transform  = 'scale(0.9)';
-    setTimeout(() => { pill.style.transform = ''; }, 100);
   });
 });
 
