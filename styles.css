@@ -87,13 +87,15 @@ body::after {
 .cursor-ring {
   width: 30px; height: 30px; border: 1px solid rgba(255,255,255,0.6); border-radius: 50%;
   position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998;
-  transition: width 0.2s var(--ease), height 0.2s var(--ease), border-color 0.2s, background 0.2s;
+  will-change: transform; backface-visibility: hidden;
+  transition: width 0.15s ease-out, height 0.15s ease-out, border-color 0.15s, background 0.15s;
   mix-blend-mode: difference;
 }
 .cursor-dot {
   width: 4px; height: 4px; background: var(--white); border-radius: 50%;
   position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
-  transition: width 0.1s, height 0.1s;
+  will-change: transform; backface-visibility: hidden;
+  transition: width 0.08s ease-out, height 0.08s ease-out;
 }
 body.hovering .cursor-ring { width: 54px; height: 54px; border-color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.04); }
 body.hovering .cursor-dot { width: 6px; height: 6px; }
@@ -103,7 +105,7 @@ body * { cursor: none !important; }
   position: fixed; width: 500px; height: 500px; border-radius: 50%;
   pointer-events: none; z-index: 0;
   background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%);
-  transform: translate(-50%, -50%); will-change: transform;
+  transform: translate3d(-50%, -50%, 0); will-change: transform; backface-visibility: hidden;
 }
 
 /* NAV */
@@ -201,7 +203,7 @@ section {
   font-weight: 400; letter-spacing: 0.06em; color: transparent;
   -webkit-text-stroke: 1px rgba(255,255,255,0.04);
   user-select: none; pointer-events: none; white-space: nowrap; z-index: 0;
-  animation: bgTextPulse 7s ease-in-out infinite; will-change: transform; text-transform: uppercase;
+  animation: bgTextPulse 7s ease-in-out infinite; will-change: transform; backface-visibility: hidden; text-transform: uppercase;
 }
 @keyframes bgTextPulse {
   0%, 100% { -webkit-text-stroke-color: rgba(255,255,255,0.04); }
@@ -720,6 +722,7 @@ section {
 .wcard {
   background: var(--surface); overflow: hidden; transition: background 0.4s;
   display: flex; flex-direction: column; position: relative;
+  will-change: transform; backface-visibility: hidden;
 }
 .wcard::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;

@@ -37,21 +37,22 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ─── CUSTOM CURSOR ─────────────────────────
+// ─── CUSTOM CURSOR (ultra smooth + max sens) ─
 const ring = document.getElementById('cursorRing');
 const dot  = document.getElementById('cursorDot');
 let mx = -200, my = -200;
 let rx = -200, ry = -200;
+const SENS = 0.35; // lerp — higher = snappier
 
 window.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
-  dot.style.transform = `translate(${mx - 2.5}px, ${my - 2.5}px)`;
+  dot.style.transform = `translate3d(${mx - 2.5}px, ${my - 2.5}px, 0)`;
 }, { passive: true });
 
 function animRing() {
-  rx += (mx - rx) * 0.1;
-  ry += (my - ry) * 0.1;
-  ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+  rx += (mx - rx) * SENS;
+  ry += (my - ry) * SENS;
+  ring.style.transform = `translate3d(${rx - 18}px, ${ry - 18}px, 0)`;
   requestAnimationFrame(animRing);
 }
 animRing();
@@ -325,13 +326,20 @@ document.querySelectorAll('.sec-title').forEach(el => {
   el.addEventListener('mouseleave', () => clearInterval(interval));
 });
 
-// ─── WORK CARD TILT ────────────────────────
+// ─── WORK CARD TILT (rAF-optimized) ────────
 document.querySelectorAll('.wcard').forEach(card => {
+  let tick = false;
   card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width  - 0.5;
-    const y = (e.clientY - r.top)  / r.height - 0.5;
-    card.style.transform = `translateY(-4px) perspective(800px) rotateY(${x * 5}deg) rotateX(${y * -4}deg)`;
+    if (!tick) {
+      requestAnimationFrame(() => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform = `translateY(-4px) perspective(800px) rotateY(${x * 5}deg) rotateX(${y * -4}deg)`;
+        tick = false;
+      });
+      tick = true;
+    }
   });
   card.addEventListener('mouseleave', () => {
     card.style.transform = '';
