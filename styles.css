@@ -549,53 +549,49 @@ section {
 
 /* ─── Glass Drop Hover ─────────────────────── */
 .name-line {
-  z-index: 1;
+  transition: text-shadow 0.4s var(--ease), transform 0.4s var(--ease);
 }
 .name-line:hover {
   animation: none;
   text-shadow:
-    0 0 40px rgba(255,255,255,0.08),
-    0 0 80px rgba(124,58,237,0.05),
-    0 0 120px rgba(232,121,249,0.03);
+    0 0 30px rgba(255,255,255,0.12),
+    0 0 80px rgba(124,58,237,0.08),
+    0 0 140px rgba(232,121,249,0.04);
 }
 
-/* Glass shimmer overlay */
+/* Glass highlight bar sweeps below text */
 .name-line::before {
   content: '';
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.06) 30%,
-    rgba(255,255,255,0.1) 50%,
-    rgba(255,255,255,0.06) 70%,
-    transparent 100%
+  position: absolute; left: 0; right: 0; bottom: -6px; height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(255,255,255,0.3) 30%,
+    rgba(232,121,249,0.5) 50%, rgba(255,255,255,0.3) 70%, transparent 100%
   );
-  opacity: 0; transition: opacity 0.4s var(--ease);
+  opacity: 0; pointer-events: none; filter: blur(1px);
 }
 .name-line:hover::before {
-  opacity: 1; animation: glassSweep 1.8s ease-in-out infinite;
+  opacity: 1; animation: glassSweep 1.2s ease-in-out infinite;
 }
 
-/* Water drop ripple */
+/* Water drop ripple — expands from behind text, never covers it */
 .name-line::after {
   content: '';
-  position: absolute; top: 50%; left: 50%; z-index: 3; pointer-events: none;
+  position: absolute; top: 50%; left: 50%; z-index: -1; pointer-events: none;
   width: 0; height: 0; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+  border: 1px solid rgba(255,255,255,0.15);
   opacity: 0; transform: translate(-50%, -50%);
 }
 .name-line:hover::after {
-  opacity: 1; animation: dropRipple 2s ease-out infinite;
+  opacity: 1; animation: dropRipple 1.6s ease-out infinite;
 }
 
 @keyframes glassSweep {
-  0% { transform: translateX(-120%); }
-  100% { transform: translateX(120%); }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 @keyframes dropRipple {
-  0% { width: 0; height: 0; opacity: 0.5; }
-  100% { width: 400px; height: 400px; opacity: 0; }
+  0% { width: 0; height: 0; opacity: 0.6; border-width: 2px; }
+  100% { width: min(80vw, 600px); height: min(80vw, 600px); opacity: 0; border-width: 0.5px; }
 }
 
 .role-switcher {
