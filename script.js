@@ -1,33 +1,8 @@
 /* ─────────────────────────────────────────────
-   SHAWN PORTFOLIO — script.js
+   SHANTANU PORTFOLIO — script.js
    Neural net canvas · Custom cursor · Role switcher
    Scroll animations · Magnetic buttons · Stats counter
-   Spotlight · Ripple · Text scramble · Parallax
 ───────────────────────────────────────────── */
-
-// ─── SPOTLIGHT CURSOR ──────────────────────
-const spotlight = document.createElement('div');
-spotlight.className = 'cursor-spotlight';
-document.body.appendChild(spotlight);
-
-window.addEventListener('mousemove', e => {
-  spotlight.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-}, { passive: true });
-
-// ─── CLICK RIPPLE ──────────────────────────
-document.addEventListener('click', e => {
-  const ripple = document.createElement('div');
-  ripple.className = 'ripple';
-  const size = Math.max(window.innerWidth, window.innerHeight) * 0.4;
-  ripple.style.width = ripple.style.height = size + 'px';
-  ripple.style.left = (e.clientX - size / 2) + 'px';
-  ripple.style.top = (e.clientY - size / 2) + 'px';
-  document.body.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 700);
-  // Cursor ring click flash
-  document.body.classList.add('clicking');
-  setTimeout(() => document.body.classList.remove('clicking'), 200);
-});
 
 // ─── SCROLL PROGRESS ───────────────────────
 const scrollBar = document.getElementById('scrollBar');
@@ -86,43 +61,6 @@ document.querySelectorAll('a, button, .tp, .wcard').forEach(el => {
   el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
 });
 
-// ─── TEXT SCRAMBLE ON WORK CARD TITLES ─────
-const chars = '!<>-_\\/[]{}—=+*^?#$%&@';
-document.querySelectorAll('.wcard-title').forEach(title => {
-  const orig = title.textContent;
-  title.addEventListener('mouseenter', () => {
-    let count = 0;
-    const interval = setInterval(() => {
-      let scrambled = '';
-      for (let i = 0; i < orig.length; i++) {
-        scrambled += orig[i] === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)];
-      }
-      title.textContent = scrambled;
-      count++;
-      if (count > 6) {
-        clearInterval(interval);
-        title.textContent = orig;
-      }
-    }, 50);
-  });
-});
-
-// ─── HERO + CONTACT BG TEXT PARALLAX ───────
-const heroBgText = document.querySelector('.hero-bg-text');
-const contactBgText = document.querySelector('.contact-bg-text');
-const parallaxEls = [heroBgText, contactBgText].filter(Boolean);
-
-window.addEventListener('mousemove', e => {
-  const x = (e.clientX / window.innerWidth - 0.5) * 20;
-  const y = (e.clientY / window.innerHeight - 0.5) * 15;
-  if (heroBgText) {
-    heroBgText.style.transform = `translate(calc(-50% + ${x}px), calc(-55% + ${y}px))`;
-  }
-  if (contactBgText) {
-    contactBgText.style.transform = `translate(calc(${x}px), calc(${y}px))`;
-  }
-}, { passive: true });
-
 // ─── NEURAL NET CANVAS ─────────────────────
 const canvas = document.getElementById('neural');
 const ctx    = canvas.getContext('2d');
@@ -141,13 +79,6 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
 
-let attractMode = false;
-setInterval(() => { 
-  attractMode = !attractMode; 
-  const statusText = document.querySelector('.status-text');
-  if (statusText) statusText.textContent = attractMode ? 'Attracting' : 'Available';
-}, 4000);
-
 class Particle {
   constructor() { this.reset(); }
   reset() {
@@ -158,29 +89,19 @@ class Particle {
     this.r  = Math.random() * 1.8 + 0.5;
     this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     this.alpha = Math.random() * 0.5 + 0.2;
-    this.baseAlpha = this.alpha;
   }
   update() {
     this.x += this.vx;
     this.y += this.vy;
-    // Mouse interaction — alternates between repel and attract
+    // Mouse repulsion
     if (mouse.x !== null) {
       const dx = this.x - mouse.x;
       const dy = this.y - mouse.y;
       const d  = Math.sqrt(dx * dx + dy * dy);
-      if (d < 120) {
-        const force = (120 - d) / 120;
-        if (attractMode) {
-          this.vx -= (dx / d) * force * 0.3;
-          this.vy -= (dy / d) * force * 0.3;
-          this.alpha = Math.min(1, this.baseAlpha + force * 0.5);
-        } else {
-          this.vx += (dx / d) * force * 0.8;
-          this.vy += (dy / d) * force * 0.8;
-          this.alpha = Math.max(0.1, this.baseAlpha - force * 0.3);
-        }
-      } else {
-        this.alpha += (this.baseAlpha - this.alpha) * 0.05;
+      if (d < 100) {
+        const force = (100 - d) / 100 * 0.8;
+        this.vx += (dx / d) * force;
+        this.vy += (dy / d) * force;
       }
     }
     // Dampen
@@ -251,63 +172,36 @@ drawNeural();
 // ─── ROLE SWITCHER ─────────────────────────
 const roles = document.querySelectorAll('.role');
 let roleIdx = 0;
-let roleInterval;
-
-function scrambleRoleText(el, target, duration = 400) {
-  const chars = '!<>-_\\/[]{}—=+*^?#';
-  let start = Date.now();
-  function frame() {
-    const elapsed = Date.now() - start;
-    const progress = Math.min(elapsed / duration, 1);
-    let result = '';
-    for (let i = 0; i < target.length; i++) {
-      if (i < Math.floor(progress * target.length)) {
-        result += target[i];
-      } else {
-        result += chars[Math.floor(Math.random() * chars.length)];
-      }
-    }
-    el.textContent = result;
-    if (progress < 1) requestAnimationFrame(frame);
-    else el.textContent = target;
-  }
-  frame();
-}
 
 function switchRole() {
   const current = roles[roleIdx];
   const nextIdx = (roleIdx + 1) % roles.length;
   const next    = roles[nextIdx];
-  const nextText = next.textContent;
 
-  current.style.transition = 'all 0.4s cubic-bezier(0.22,1,0.36,1)';
+  current.style.transition = 'all 0.45s cubic-bezier(0.22,1,0.36,1)';
   current.style.opacity    = '0';
   current.style.transform  = 'translateY(-100%)';
 
   setTimeout(() => {
     current.classList.remove('active');
     current.style.cssText = '';
-    current.textContent = nextText;
 
     next.classList.add('active');
     next.style.opacity   = '0';
     next.style.transform = 'translateY(100%)';
     next.style.position  = 'relative';
 
-    // Scramble the text as it appears
-    scrambleRoleText(next, nextText);
-
     requestAnimationFrame(() => {
-      next.style.transition = 'all 0.4s cubic-bezier(0.22,1,0.36,1)';
+      next.style.transition = 'all 0.45s cubic-bezier(0.22,1,0.36,1)';
       next.style.opacity    = '1';
       next.style.transform  = 'translateY(0)';
     });
 
     roleIdx = nextIdx;
-  }, 400);
+  }, 450);
 }
 
-roleInterval = setInterval(switchRole, 2800);
+setInterval(switchRole, 2600);
 
 // ─── MAGNETIC BUTTONS ──────────────────────
 document.querySelectorAll('.mag').forEach(el => {
@@ -356,6 +250,19 @@ const cardObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 document.querySelectorAll('.wcard').forEach(card => cardObserver.observe(card));
+
+// ─── SKILLS ANIMATION ──────────────────────
+const skillsSection = document.querySelector('.skills');
+const skillsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('animated');
+      skillsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+if (skillsSection) skillsObserver.observe(skillsSection);
 
 // Skill domain stagger
 document.querySelectorAll('.skill-domain').forEach((el, i) => {
@@ -431,16 +338,68 @@ document.querySelectorAll('.wcard').forEach(card => {
   });
 });
 
-// ─── SKILL IMAGE FALLBACK ───────────────────
-document.addEventListener('error', e => {
-  const img = e.target;
-  if (img.tagName === 'IMG' && img.closest('.skill-item')) {
-    const span = document.createElement('span');
-    span.className = 'skill-fallback';
-    span.textContent = (img.alt || '?').charAt(0).toUpperCase();
-    img.replaceWith(span);
-  }
-}, true);
+// ─── TECH PILL INTERACTIONS ─────────────────
+const techPills = document.querySelectorAll('.tp');
+techPills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    pill.style.transition = 'all 0.1s';
+    pill.style.transform  = 'scale(0.9)';
+    setTimeout(() => { pill.style.transform = ''; }, 100);
+  });
+});
 
-// ─── NAV STATUS ATTRACT/REPEL TEXT ──────────
-// Status already updates in the neural net section above
+// ─── HERO PHOTO — 3D PARALLAX + GLITCH ──────
+const hpFrame    = document.getElementById('hpFrame');
+const heroPhoto  = document.querySelector('.hero-photo');
+
+if (heroPhoto && hpFrame) {
+  let ticking = false;
+
+  heroPhoto.addEventListener('mousemove', e => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const r  = heroPhoto.getBoundingClientRect();
+        const x  = (e.clientX - r.left) / r.width  - 0.5;
+        const y  = (e.clientY - r.top)  / r.height - 0.5;
+
+        // 3D tilt on frame
+        hpFrame.style.transform = `perspective(900px) rotateY(${x * -12}deg) rotateX(${y * 8}deg) scale(1.03)`;
+
+        // Orbit rings parallax
+        document.querySelectorAll('.hp-orbit').forEach((ring, i) => {
+          const depth = (i + 1) * 6;
+          ring.style.transform = `translate(calc(-50% + ${x * depth}px), calc(-50% + ${y * depth}px))`;
+        });
+
+        // Badges subtle parallax
+        const b1 = document.querySelector('.hp-badge-1');
+        const b2 = document.querySelector('.hp-badge-2');
+        const b3 = document.querySelector('.hp-badge-3');
+        if (b1) b1.style.transform = `translateY(${-5 + y * -8}px) translateX(${x * 5}px)`;
+        if (b2) b2.style.transform = `translateY(${-5 + y * 6}px)  translateX(${x * -4}px)`;
+        if (b3) b3.style.transform = `translateY(${-5 + y * -5}px) translateX(${x * 4}px)`;
+
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  heroPhoto.addEventListener('mouseleave', () => {
+    hpFrame.style.transition = 'transform 0.7s cubic-bezier(0.34,1.56,0.64,1)';
+    hpFrame.style.transform  = '';
+    document.querySelectorAll('.hp-orbit').forEach(ring => {
+      ring.style.transform = '';
+    });
+    document.querySelectorAll('.hp-badge').forEach(b => {
+      b.style.transform = '';
+    });
+    setTimeout(() => { hpFrame.style.transition = ''; }, 700);
+  });
+
+  // Random glitch spike on click
+  heroPhoto.addEventListener('click', () => {
+    hpFrame.classList.add('glitch-spike');
+    setTimeout(() => hpFrame.classList.remove('glitch-spike'), 400);
+  });
+}

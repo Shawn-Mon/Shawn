@@ -3,13 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHAWN — Code. Cut. Automate.</title>
+  <title>SHANTANU — Code. Cut. Automate.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- SVG filters for RGB channel split on photo -->
+  <svg class="hp-svg-filters" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="redChannel">
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/>
+      </filter>
+      <filter id="blueChannel">
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+      </filter>
+    </defs>
+  </svg>
 
   <!-- CURSOR -->
   <div class="cursor-ring" id="cursorRing"></div>
@@ -31,7 +43,7 @@
   <nav id="nav">
     <div class="nav-inner">
       <a href="#home" class="logo">
-        <span class="logo-bracket">[</span>SHAWN<span class="logo-bracket">]</span>
+        <span class="logo-bracket">[</span>SHANTANU<span class="logo-bracket">]</span>
       </a>
       <div class="nav-links">
         <a href="#home" class="nl active" data-label="home">home</a>
@@ -48,7 +60,7 @@
 
   <!-- ══════════════ HERO ══════════════ -->
   <section id="home" class="hero">
-    <div class="hero-bg-text">SHAWN</div>
+    <div class="hero-bg-text">SHANTANU</div>
 
     <div class="hero-content">
       <div class="hero-text">
@@ -58,7 +70,7 @@
         </div>
 
         <h1 class="hero-name">
-          <span class="name-line" data-text="SHAWN">SHAWN</span>
+          <span class="name-line" data-text="SHANTANU">SHANTANU</span>
         </h1>
 
         <div class="role-switcher">
@@ -103,11 +115,54 @@
       </div>
 
       <div class="hero-photo">
-        <div class="hp-frame">
-          <img src="assets/shawn.png" alt="Shawn" />
+        <!-- Floating orbit rings -->
+        <div class="hp-orbit hp-orbit-1"></div>
+        <div class="hp-orbit hp-orbit-2"></div>
+        <div class="hp-orbit hp-orbit-3"></div>
+
+        <!-- Corner brackets -->
+        <div class="hp-corner hp-corner-tl"></div>
+        <div class="hp-corner hp-corner-tr"></div>
+        <div class="hp-corner hp-corner-bl"></div>
+        <div class="hp-corner hp-corner-br"></div>
+
+        <!-- Main frame -->
+        <div class="hp-frame" id="hpFrame">
+          <!-- RGB Aberration ghost layers -->
+          <img src="assets/shawn.png" alt="" class="hp-ghost hp-ghost-r" aria-hidden="true" />
+          <img src="assets/shawn.png" alt="" class="hp-ghost hp-ghost-b" aria-hidden="true" />
+
+          <!-- Actual photo -->
+          <img src="assets/shawn.png" alt="Shawn" class="hp-main" />
+
+          <!-- CRT scanlines -->
           <div class="hp-scanline"></div>
-          <div class="hp-tear"></div>
-          <div class="hp-glow"></div>
+
+          <!-- Glitch tear layers -->
+          <div class="hp-tear hp-tear-1"></div>
+          <div class="hp-tear hp-tear-2"></div>
+
+          <!-- Holographic sheen -->
+          <div class="hp-holo"></div>
+
+          <!-- Scan beam -->
+          <div class="hp-beam"></div>
+
+          <!-- Vignette -->
+          <div class="hp-vignette"></div>
+        </div>
+
+        <!-- Floating label badges -->
+        <div class="hp-badge hp-badge-1">
+          <span class="hp-badge-dot"></span>
+          <span>SHANTANU.DEV</span>
+        </div>
+        <div class="hp-badge hp-badge-2">
+          <span>SYS_ONLINE</span>
+          <span class="hp-badge-dot hp-badge-dot-g"></span>
+        </div>
+        <div class="hp-badge hp-badge-3">
+          <span>&#x2665; CREATIVE</span>
         </div>
       </div>
     </div>

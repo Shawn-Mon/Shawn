@@ -214,112 +214,313 @@ section {
 }
 .hero-text { flex: 1; min-width: 0; }
 
-/* ─── HERO PHOTO ──────────────────────────── */
+/* ═══════════════════════════════════════════
+   HERO PHOTO — CINEMATIC GLITCH EDITION
+═══════════════════════════════════════════ */
 .hero-photo {
-  flex-shrink: 0; width: 320px; height: 320px;
-  opacity: 0; animation: fadeUp 0.7s var(--ease) 0.35s forwards;
+  flex-shrink: 0;
+  width: 360px; height: 420px;
+  position: relative;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease) 0.35s forwards;
 }
-.hp-frame {
-  position: relative; width: 100%; height: 100%; border-radius: 18px;
-  overflow: hidden; background: var(--surface);
-  box-shadow: 0 0 40px rgba(124,58,237,0.08), 0 0 80px rgba(124,58,237,0.04);
-  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
-}
-.hp-frame:hover {
-  transform: perspective(1000px) rotateY(-6deg) rotateX(3deg) scale(1.02);
-  box-shadow: 0 0 60px rgba(124,58,237,0.2), 0 0 120px rgba(232,121,249,0.08);
-}
-.hp-frame img {
-  width: 100%; height: 100%; object-fit: cover;
-  display: block; transition: transform 0.6s var(--ease);
-  position: relative; z-index: 1;
-}
-.hp-frame:hover img { transform: scale(1.08); }
 
-/* ─── Rotating gradient border ────────────── */
+/* ─── Orbit Rings ─────────────────────────── */
+.hp-orbit {
+  position: absolute; border-radius: 50%;
+  border: 1px solid; pointer-events: none;
+}
+.hp-orbit-1 {
+  width: 420px; height: 420px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  border-color: rgba(255,255,255,0.04);
+  animation: orbitSpin 18s linear infinite;
+}
+.hp-orbit-2 {
+  width: 480px; height: 480px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  border-color: rgba(255,255,255,0.025);
+  animation: orbitSpin 26s linear infinite reverse;
+}
+.hp-orbit-3 {
+  width: 540px; height: 540px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  border-color: rgba(255,255,255,0.015);
+  animation: orbitSpin 38s linear infinite;
+}
+/* Orbit dots */
+.hp-orbit-1::before, .hp-orbit-2::before, .hp-orbit-3::before {
+  content: '';
+  position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+  width: 5px; height: 5px; background: var(--white); border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+.hp-orbit-2::before { background: rgba(255,255,255,0.6); width: 4px; height: 4px; }
+.hp-orbit-3::before { background: rgba(255,255,255,0.4); width: 3px; height: 3px; }
+@keyframes orbitSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* ─── Corner Brackets ─────────────────────── */
+.hp-corner {
+  position: absolute; width: 22px; height: 22px;
+  z-index: 10; pointer-events: none;
+  transition: all 0.4s var(--ease);
+}
+.hp-corner::before, .hp-corner::after {
+  content: ''; position: absolute; background: var(--white);
+}
+.hp-corner-tl { top: -6px; left: -6px; }
+.hp-corner-tl::before { top: 0; left: 0; width: 100%; height: 2px; }
+.hp-corner-tl::after  { top: 0; left: 0; width: 2px; height: 100%; }
+
+.hp-corner-tr { top: -6px; right: -6px; }
+.hp-corner-tr::before { top: 0; right: 0; width: 100%; height: 2px; }
+.hp-corner-tr::after  { top: 0; right: 0; width: 2px; height: 100%; }
+
+.hp-corner-bl { bottom: -6px; left: -6px; }
+.hp-corner-bl::before { bottom: 0; left: 0; width: 100%; height: 2px; }
+.hp-corner-bl::after  { bottom: 0; left: 0; width: 2px; height: 100%; }
+
+.hp-corner-br { bottom: -6px; right: -6px; }
+.hp-corner-br::before { bottom: 0; right: 0; width: 100%; height: 2px; }
+.hp-corner-br::after  { bottom: 0; right: 0; width: 2px; height: 100%; }
+
+.hero-photo:hover .hp-corner { width: 30px; height: 30px; box-shadow: 0 0 10px rgba(255,255,255,0.6); }
+
+/* ─── Main Frame ──────────────────────────── */
+.hp-frame {
+  position: relative; width: 100%; height: 100%;
+  overflow: hidden;
+  background: #0a0a0a;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  animation: hpFlicker 7s ease-in-out infinite;
+  transition: transform 0.6s var(--ease);
+}
+.hero-photo:hover .hp-frame {
+  transform: perspective(900px) rotateY(-5deg) rotateX(2deg) scale(1.025);
+}
+
+/* Conic border via pseudo */
 .hp-frame::before {
-  content: ''; position: absolute; inset: -3px; z-index: 0;
-  background: conic-gradient(from 0deg, var(--violet), var(--magenta), var(--cyan), var(--violet), var(--magenta), var(--violet));
-  animation: hpBorderSpin 3s linear infinite;
-  border-radius: 21px;
+  content: '';
+  position: absolute; inset: -2px; z-index: 0;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255,255,255,0)    0deg,
+    rgba(255,255,255,0.7)  90deg,
+    rgba(255,255,255,0)    180deg,
+    rgba(255,255,255,0.3)  270deg,
+    rgba(255,255,255,0)    360deg
+  );
+  animation: hpBorderSpin 4s linear infinite;
+  clip-path: inherit;
+  pointer-events: none;
 }
 @keyframes hpBorderSpin { to { transform: rotate(360deg); } }
 
-/* ─── CRT scanlines ───────────────────────── */
+/* ─── RGB Ghost Layers (chromatic aberration) */
+.hp-ghost {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  pointer-events: none; z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.hp-ghost-r {
+  mix-blend-mode: screen;
+  filter: url(#redChannel);
+  transform: translate(-4px, 0);
+  animation: ghostR 5s ease-in-out infinite;
+}
+.hp-ghost-b {
+  mix-blend-mode: screen;
+  filter: url(#blueChannel);
+  transform: translate(4px, 0);
+  animation: ghostB 5s ease-in-out infinite;
+}
+@keyframes ghostR {
+  0%, 80%, 100% { opacity: 0; transform: translate(0,0); }
+  82% { opacity: 0.55; transform: translate(-6px, 1px); }
+  84% { opacity: 0.3; transform: translate(-3px, -1px); }
+  86% { opacity: 0.6; transform: translate(-8px, 2px); }
+  90% { opacity: 0; }
+}
+@keyframes ghostB {
+  0%, 80%, 100% { opacity: 0; transform: translate(0,0); }
+  82% { opacity: 0.45; transform: translate(6px, -1px); }
+  84% { opacity: 0.25; transform: translate(3px, 1px); }
+  86% { opacity: 0.5; transform: translate(8px, -2px); }
+  90% { opacity: 0; }
+}
+
+/* ─── Main photo ──────────────────────────── */
+.hp-main {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; position: relative; z-index: 2;
+  transition: transform 0.6s var(--ease), filter 0.6s;
+  filter: contrast(1.05) brightness(0.95);
+}
+.hero-photo:hover .hp-main {
+  transform: scale(1.06);
+  filter: contrast(1.1) brightness(1.0) saturate(0.85);
+}
+
+/* ─── CRT Scanlines ───────────────────────── */
 .hp-scanline {
-  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  position: absolute; inset: 0; z-index: 6; pointer-events: none;
   background: repeating-linear-gradient(
-    0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+    0deg,
+    transparent, transparent 2px,
+    rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
   );
+  animation: scanlineScroll 8s linear infinite;
 }
-.hp-frame:hover .hp-scanline {
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 1px, rgba(0,0,0,0.12) 1px, rgba(0,0,0,0.12) 3px
-  );
-}
+@keyframes scanlineScroll { from { background-position-y: 0; } to { background-position-y: 40px; } }
 
-/* ─── Glitch tear ─────────────────────────── */
+/* ─── Glitch Tears ────────────────────────── */
 .hp-tear {
+  position: absolute; left: 0; right: 0; z-index: 7; pointer-events: none;
+  height: 4px; opacity: 0;
+}
+.hp-tear-1 {
+  background: linear-gradient(90deg, rgba(255,0,68,0.5), rgba(255,0,68,0.1), transparent);
+  animation: tear1 6s steps(1) infinite;
+}
+.hp-tear-2 {
+  background: linear-gradient(90deg, transparent, rgba(0,68,255,0.4), rgba(0,68,255,0.1));
+  animation: tear2 6s steps(1) infinite;
+}
+@keyframes tear1 {
+  0%, 78%, 100% { opacity: 0; top: 30%; }
+  79% { opacity: 1; top: 25%; height: 3px; }
+  80% { opacity: 0.5; top: 55%; height: 6px; }
+  81% { opacity: 1; top: 70%; height: 2px; }
+  82% { opacity: 0; }
+}
+@keyframes tear2 {
+  0%, 78%, 100% { opacity: 0; top: 60%; }
+  80% { opacity: 0.8; top: 40%; height: 5px; }
+  81% { opacity: 0.3; top: 65%; height: 3px; }
+  82% { opacity: 1; top: 80%; height: 4px; }
+  83% { opacity: 0; }
+}
+
+/* ─── Holographic Sheen ───────────────────── */
+.hp-holo {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255,255,255,0.01) 30%,
+    rgba(255,255,255,0.06) 45%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.06) 55%,
+    rgba(255,255,255,0.01) 70%,
+    transparent 100%
+  );
+  background-size: 200% 200%;
+  transition: opacity 0.4s;
+  animation: holoMove 3s ease-in-out infinite;
+}
+@keyframes holoMove {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+.hero-photo:hover .hp-holo { opacity: 1; }
+
+/* ─── Scan Beam ───────────────────────────── */
+.hp-beam {
+  position: absolute; left: 0; right: 0; height: 1px; z-index: 8;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  box-shadow: 0 0 8px rgba(255,255,255,0.3);
+  animation: beamScan 3.5s ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes beamScan {
+  0%   { top: 0%; opacity: 0; }
+  5%   { opacity: 0.8; }
+  95%  { opacity: 0.5; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ─── Vignette ────────────────────────────── */
+.hp-vignette {
   position: absolute; inset: 0; z-index: 4; pointer-events: none;
-  background: linear-gradient(
-    to bottom, transparent 40%, rgba(124,58,237,0.08) 40%,
-    rgba(124,58,237,0.08) 42%, transparent 42%, transparent 100%
-  );
-  animation: hpTear 4s ease-in-out infinite;
-}
-@keyframes hpTear {
-  0%, 100% { transform: translateY(0); }
-  10% { transform: translateY(15%); }
-  20% { transform: translateY(-5%); }
-  30% { transform: translateY(40%); }
-  45% { transform: translateY(-10%); }
-  60% { transform: translateY(60%); }
-  75% { transform: translateY(20%); }
-  90% { transform: translateY(-15%); }
-}
-.hp-frame:hover .hp-tear {
-  background: linear-gradient(
-    to bottom, transparent 30%, rgba(255,0,68,0.12) 30%,
-    rgba(255,0,68,0.12) 32%, transparent 32%, transparent 55%,
-    rgba(0,68,255,0.1) 55%, rgba(0,68,255,0.1) 57%, transparent 57%, transparent 100%
-  );
-  animation: hpTearHover 0.8s steps(3) infinite;
-}
-@keyframes hpTearHover {
-  0% { transform: translateY(0); }
-  25% { transform: translateY(30%); }
-  50% { transform: translateY(-10%); }
-  75% { transform: translateY(50%); }
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 50%, rgba(0,0,0,0.6) 100%);
 }
 
-/* ─── Border glow ─────────────────────────── */
-.hp-glow {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
-  transition: opacity 0.5s;
-  background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(124,58,237,0.08));
-}
-.hp-frame:hover .hp-glow { opacity: 1; }
-
-/* ─── Holographic flicker ─────────────────── */
+/* ─── Flickering ──────────────────────────── */
 @keyframes hpFlicker {
   0%, 100% { opacity: 1; }
-  3% { opacity: 0.85; }
-  6% { opacity: 1; }
-  7% { opacity: 0.9; }
-  10% { opacity: 1; }
-  50% { opacity: 0.95; }
-  53% { opacity: 0.88; }
-  55% { opacity: 1; }
+  2%  { opacity: 0.9; }
+  4%  { opacity: 1; }
+  40% { opacity: 0.97; }
+  78% { opacity: 0.92; }
+  79% { opacity: 1; }
+  81% { opacity: 0.85; }
+  82% { opacity: 1; }
 }
-.hp-frame { animation: hpFlicker 6s ease-in-out infinite; }
+
+/* ─── Floating Badges ─────────────────────── */
+.hp-badge {
+  position: absolute; z-index: 12;
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  background: rgba(0,0,0,0.85);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 0.4rem;
+  color: var(--grey2);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  animation: badgeFloat 3s ease-in-out infinite;
+}
+.hp-badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--white);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+.hp-badge-dot-g { background: #4ade80; }
+
+.hp-badge-1 {
+  top: 12%; right: -18%;
+  animation-delay: 0s;
+  border-color: rgba(255,255,255,0.12);
+}
+.hp-badge-2 {
+  bottom: 20%; left: -22%;
+  animation-delay: 1s;
+  color: #4ade80;
+  border-color: rgba(74,222,128,0.25);
+}
+.hp-badge-3 {
+  bottom: 8%; right: -16%;
+  animation-delay: 1.8s;
+  color: var(--grey3);
+  border-color: var(--border2);
+}
+@keyframes badgeFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+/* SVG color filters for RGB channels */
+.hp-svg-filters { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 @media (max-width: 900px) {
   .hero-content { flex-direction: column; text-align: center; gap: 2rem; }
-  .hero-photo { width: 220px; height: 220px; }
+  .hero-photo { width: 260px; height: 300px; margin: 0 auto; }
   .hero-eyebrow { justify-content: center; }
   .hero-cta { justify-content: center; }
   .hero-bio { max-width: 100%; }
   .hero-stats { justify-content: center; }
+  .hp-badge-1 { right: -10%; font-size: 0.52rem; }
+  .hp-badge-2 { left: -8%; font-size: 0.52rem; }
+  .hp-badge-3 { display: none; }
+  .hp-orbit-1 { width: 300px; height: 300px; }
+  .hp-orbit-2 { width: 340px; height: 340px; }
+  .hp-orbit-3 { display: none; }
 }
 .hero-eyebrow {
   display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
@@ -342,44 +543,57 @@ section {
   animation: nameReveal 0.9s var(--ease) 0.2s forwards;
   text-shadow: 0 0 80px rgba(255,255,255,0.06), 3px 3px 0px rgba(0,0,0,0.9);
 }
-.name-line:hover { animation: glitchName 0.07s step-end infinite; }
 @keyframes nameReveal { to { opacity: 1; transform: translateY(0) skewY(0deg); } }
-@keyframes glitchName {
-  0% { transform: translate(0,0); text-shadow: 3px 3px 0 #000; }
-  20% { transform: translate(-4px,0); text-shadow: 4px 0 var(--glitch-r), -4px 0 var(--glitch-b); }
-  40% { transform: translate(4px,0); text-shadow: 3px 3px 0 #000; }
-  60% { transform: translate(-2px,1px); text-shadow: -4px 0 var(--glitch-r), 4px 0 var(--glitch-b); }
-  80% { transform: translate(2px,-1px); text-shadow: 3px 3px 0 #000; }
-  100% { transform: translate(0,0); }
+
+/* ─── Glass Drop Hover ─────────────────────── */
+.name-line {
+  z-index: 1;
 }
-.name-line::before, .name-line::after {
-  content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%;
-  color: var(--white); text-shadow: none;
-  font-family: var(--font-brutal); font-size: inherit; line-height: inherit; letter-spacing: inherit;
+.name-line:hover {
+  animation: none;
+  text-shadow:
+    0 0 40px rgba(255,255,255,0.08),
+    0 0 80px rgba(124,58,237,0.05),
+    0 0 120px rgba(232,121,249,0.03);
 }
+
+/* Glass shimmer overlay */
 .name-line::before {
-  animation: nameGlitchA 6s infinite;
-  clip-path: polygon(0 18%, 100% 18%, 100% 42%, 0 42%);
-  left: -3px; color: var(--glitch-r); opacity: 0;
+  content: '';
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.06) 30%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0.06) 70%,
+    transparent 100%
+  );
+  opacity: 0; transition: opacity 0.4s var(--ease);
 }
+.name-line:hover::before {
+  opacity: 1; animation: glassSweep 1.8s ease-in-out infinite;
+}
+
+/* Water drop ripple */
 .name-line::after {
-  animation: nameGlitchB 6s infinite;
-  clip-path: polygon(0 58%, 100% 58%, 100% 80%, 0 80%);
-  left: 3px; color: var(--glitch-b); opacity: 0;
+  content: '';
+  position: absolute; top: 50%; left: 50%; z-index: 3; pointer-events: none;
+  width: 0; height: 0; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+  opacity: 0; transform: translate(-50%, -50%);
 }
-@keyframes nameGlitchA {
-  0%, 88%, 100% { opacity: 0; transform: translate(0); }
-  89% { opacity: 1; transform: translate(-4px, 2px); }
-  90% { opacity: 0; transform: translate(3px, -2px); }
-  91% { opacity: 1; transform: translate(-2px, 1px); }
-  92% { opacity: 0; }
+.name-line:hover::after {
+  opacity: 1; animation: dropRipple 2s ease-out infinite;
 }
-@keyframes nameGlitchB {
-  0%, 88%, 100% { opacity: 0; transform: translate(0); }
-  89% { opacity: 1; transform: translate(4px, -2px); }
-  90% { opacity: 0; transform: translate(-3px, 2px); }
-  91% { opacity: 1; transform: translate(2px, -1px); }
-  92% { opacity: 0; }
+
+@keyframes glassSweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+@keyframes dropRipple {
+  0% { width: 0; height: 0; opacity: 0.5; }
+  100% { width: 400px; height: 400px; opacity: 0; }
 }
 
 .role-switcher {
@@ -855,4 +1069,17 @@ section {
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* Click glitch spike */
+.hp-frame.glitch-spike {
+  animation: glitchSpike 0.4s steps(2) forwards !important;
+}
+@keyframes glitchSpike {
+  0%  { filter: none; }
+  15% { filter: hue-rotate(90deg) saturate(2) brightness(1.3); transform: translate(-3px,0) perspective(900px) rotateY(2deg); }
+  30% { filter: hue-rotate(-90deg) saturate(2); transform: translate(3px,1px) perspective(900px) rotateY(-2deg); }
+  45% { filter: hue-rotate(180deg) brightness(1.5); transform: translate(-2px,-1px); }
+  60% { filter: hue-rotate(0deg) saturate(0.5); transform: translate(1px,0); }
+  100%{ filter: none; transform: none; }
 }
