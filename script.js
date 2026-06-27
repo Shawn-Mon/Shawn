@@ -1,12 +1,4 @@
-// ============================================
-// 1. SCROLL ANIMATIONS (Intersection Observer)
-// ============================================
-const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.2
-};
-
+// Intersection Observer
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -14,255 +6,167 @@ const observer = new IntersectionObserver((entries) => {
             observer.unobserve(entry.target);
         }
     });
-}, observerOptions);
+}, { threshold: 0.2 });
 
-document.querySelectorAll('.hidden').forEach(section => {
-    observer.observe(section);
-});
+document.querySelectorAll('.hidden').forEach(s => observer.observe(s));
 
-// ============================================
-// 2. SMOOTH SCROLLING
-// ============================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) t.scrollIntoView({ behavior: 'smooth' });
     });
 });
 
-// ============================================
-// 3. SCROLL PROGRESS BAR
-// ============================================
-const progressBar = document.getElementById('progress-bar');
-
+// Progress bar
 window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = (scrollTop / docHeight) * 100;
-    progressBar.style.width = scrollPercent + '%';
+    const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('progress-bar').style.width = p + '%';
 });
 
-// ============================================
-// 4. TYPEWRITER EFFECT
-// ============================================
-const typewriterEl = document.getElementById('typewriter');
-const phrases = [
-    'Full-Stack Developer',
-    'Designer',
-    'Problem Solver',
-    'Creative Thinker',
-    'Code Artisan'
-];
-let phraseIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-let isPaused = false;
+// Typewriter
+const el = document.getElementById('typewriter');
+const phrases = ['Full-Stack Developer', 'UI Engineer', 'Problem Solver', 'Code Artisan'];
+let pi = 0, ci = 0, del = false, pause = false;
 
-function typewriter() {
-    const current = phrases[phraseIndex];
-
-    if (!isDeleting) {
-        typewriterEl.textContent = current.substring(0, charIndex + 1);
-        charIndex++;
-        if (charIndex === current.length) {
-            isPaused = true;
-            setTimeout(() => {
-                isPaused = false;
-                isDeleting = true;
-            }, 2000);
+function type() {
+    const cur = phrases[pi];
+    if (!del) {
+        el.textContent = cur.substring(0, ci + 1);
+        ci++;
+        if (ci === cur.length) {
+            pause = true;
+            setTimeout(() => { pause = false; del = true; }, 2000);
         }
     } else {
-        typewriterEl.textContent = current.substring(0, charIndex - 1);
-        charIndex--;
-        if (charIndex === 0) {
-            isDeleting = false;
-            phraseIndex = (phraseIndex + 1) % phrases.length;
-        }
+        el.textContent = cur.substring(0, ci - 1);
+        ci--;
+        if (ci === 0) { del = false; pi = (pi + 1) % phrases.length; }
     }
-
-    const speed = isDeleting ? 40 : 80;
-    setTimeout(typewriter, isPaused ? 2500 : speed);
+    setTimeout(type, pause ? 2500 : del ? 40 : 80);
 }
+type();
 
-typewriter();
+// Cursor
+const dot = document.querySelector('.cursor-dot');
+const wrap = document.querySelector('.cursor-wrapper');
+let mx = 0, my = 0, dx = 0, dy = 0, ox = 0, oy = 0;
 
-// ============================================
-// 5. CUSTOM CURSOR (Smooth LERP)
-// ============================================
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorWrapper = document.querySelector('.cursor-wrapper');
+window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
-let mouseX = 0, mouseY = 0;
-let dotX = 0, dotY = 0;
-let outlineX = 0, outlineY = 0;
-
-window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-function animateCursor() {
-    dotX += (mouseX - dotX) * 0.5;
-    dotY += (mouseY - dotY) * 0.5;
-    outlineX += (mouseX - outlineX) * 0.15;
-    outlineY += (mouseY - outlineY) * 0.15;
-
-    cursorDot.style.transform = `translate(${dotX - 5}px, ${dotY - 5}px)`;
-    cursorWrapper.style.transform = `translate(${outlineX}px, ${outlineY}px)`;
-
-    requestAnimationFrame(animateCursor);
+function animCursor() {
+    dx += (mx - dx) * 0.5;
+    dy += (my - dy) * 0.5;
+    ox += (mx - ox) * 0.15;
+    oy += (my - oy) * 0.15;
+    dot.style.transform = `translate(${dx - 3}px, ${dy - 3}px)`;
+    wrap.style.transform = `translate(${ox}px, ${oy}px)`;
+    requestAnimationFrame(animCursor);
 }
-animateCursor();
+animCursor();
 
-const interactiveElements = document.querySelectorAll('a, button, .btn, .card-btn, .logo');
-interactiveElements.forEach((el) => {
+document.querySelectorAll('a, button, .btn, .card-btn, .logo').forEach(el => {
     el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
 });
 
-// ============================================
-// 6. 3D TILT ON PROFILE CARD
-// ============================================
-const tiltCard = document.getElementById('tilt-card');
-const profileContainer = tiltCard?.querySelector('.profile-container');
-
-if (tiltCard && profileContainer) {
-    tiltCard.addEventListener('mousemove', (e) => {
-        const rect = tiltCard.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -12;
-        const rotateY = ((x - centerX) / centerX) * 12;
-        profileContainer.style.transform =
-            `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+// 3D Tilt
+const tc = document.getElementById('tilt-card');
+const pc = tc?.querySelector('.profile-container');
+if (tc && pc) {
+    tc.addEventListener('mousemove', e => {
+        const r = tc.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        pc.style.transform = `perspective(1000px) rotateX(${y * -10}deg) rotateY(${x * 10}deg)`;
     });
-
-    tiltCard.addEventListener('mouseleave', () => {
-        profileContainer.style.transform =
-            'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    tc.addEventListener('mouseleave', () => {
+        pc.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
     });
 }
 
-// ============================================
-// 7. MAGNETIC BUTTONS
-// ============================================
-document.querySelectorAll('.magnetic-btn').forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+// Magnetic buttons
+document.querySelectorAll('.magnetic-btn').forEach(b => {
+    b.addEventListener('mousemove', e => {
+        const r = b.getBoundingClientRect();
+        const x = e.clientX - r.left - r.width / 2;
+        const y = e.clientY - r.top - r.height / 2;
+        b.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
     });
-
-    btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'translate(0, 0)';
-    });
+    b.addEventListener('mouseleave', () => { b.style.transform = ''; });
 });
 
-// ============================================
-// 8. PARTICLE SYSTEM
-// ============================================
+// Particles
 const canvas = document.getElementById('particle-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-let mouseParticle = { x: -1000, y: -1000 };
+let mp = { x: -1000, y: -1000 };
 
-function resizeCanvas() {
+function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+resize();
+window.addEventListener('resize', resize);
 
-canvas.addEventListener('mousemove', (e) => {
-    mouseParticle.x = e.clientX;
-    mouseParticle.y = e.clientY;
-});
-
-canvas.addEventListener('mouseleave', () => {
-    mouseParticle.x = -1000;
-    mouseParticle.y = -1000;
-});
-
-const colors = ['#4f46e5', '#ec4899', '#eab308', '#22c55e', '#ffffff'];
+canvas.addEventListener('mousemove', e => { mp.x = e.clientX; mp.y = e.clientY; });
+canvas.addEventListener('mouseleave', () => { mp.x = -1000; mp.y = -1000; });
 
 class Particle {
     constructor() {
         this.reset();
     }
-
     reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.speedY = (Math.random() - 0.5) * 0.4;
-        this.opacity = Math.random() * 0.4 + 0.05;
-        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.size = Math.random() * 1.5 + 0.3;
+        this.sx = (Math.random() - 0.5) * 0.3;
+        this.sy = (Math.random() - 0.5) * 0.3;
+        this.o = Math.random() * 0.3 + 0.05;
     }
-
     update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        const dx = mouseParticle.x - this.x;
-        const dy = mouseParticle.y - this.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150) {
-            const force = (150 - dist) / 150;
-            this.x -= dx * force * 0.01;
-            this.y -= dy * force * 0.01;
+        this.x += this.sx;
+        this.y += this.sy;
+        const dx = mp.x - this.x, dy = mp.y - this.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 150) {
+            const f = (150 - d) / 150;
+            this.x -= dx * f * 0.008;
+            this.y -= dy * f * 0.008;
         }
-
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        if (this.x < 0 || this.x > canvas.width) this.sx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.sy *= -1;
     }
-
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.o})`;
         ctx.fill();
-        ctx.globalAlpha = 1;
     }
 }
 
-const particleCount = Math.min(Math.floor((canvas.width * canvas.height) / 8000), 100);
-for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle());
-}
+const count = Math.min(Math.floor((canvas.width * canvas.height) / 10000), 80);
+for (let i = 0; i < count; i++) particles.push(new Particle());
 
-const connectionDistance = 120;
-
-function animateParticles() {
+function animParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     particles.forEach((p, i) => {
         p.update();
         p.draw();
-
         for (let j = i + 1; j < particles.length; j++) {
-            const dx = p.x - particles[j].x;
-            const dy = p.y - particles[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < connectionDistance) {
+            const dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 120) {
                 ctx.beginPath();
                 ctx.moveTo(p.x, p.y);
                 ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - dist / connectionDistance) * 0.08})`;
+                ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - d / 120) * 0.04})`;
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
             }
         }
     });
-
-    requestAnimationFrame(animateParticles);
+    requestAnimationFrame(animParticles);
 }
-
-animateParticles();
+animParticles();
