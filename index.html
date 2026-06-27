@@ -9,121 +9,170 @@
 <body>
 
     <div id="progress-bar"></div>
-    <canvas id="particle-canvas"></canvas>
+    <canvas id="grid-canvas"></canvas>
+    <div class="noise"></div>
 
     <div class="cursor-dot"></div>
-    <div class="cursor-wrapper">
-        <div class="cursor-outline"></div>
-    </div>
+    <div class="cursor-trail"></div>
 
-    <nav class="navbar">
-        <div class="logo">SHAWN.</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <nav id="navbar">
+        <div class="nav-inner">
+            <span class="nav-logo">S.</span>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#work" class="nav-link">Work</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
     </nav>
 
     <main>
         <section id="home" class="hero">
-            <div class="hero-content">
-                <p class="greeting">Hello, I'm</p>
-                <h1 class="reveal">Shawn</h1>
-                <p class="subtitle reveal delay" id="typewriter"></p>
-                <a href="#work" class="btn magnetic-btn reveal delay-2">View Projects →</a>
+            <div class="hero-text">
+                <p class="hero-label">Hello, I'm</p>
+                <h1 class="hero-title">
+                    <span class="letter" style="--i:0">S</span>
+                    <span class="letter" style="--i:1">h</span>
+                    <span class="letter" style="--i:2">a</span>
+                    <span class="letter" style="--i:3">w</span>
+                    <span class="letter" style="--i:4">n</span>
+                </h1>
+                <p class="hero-sub" id="scramble">Full-Stack Developer</p>
+                <a href="#work" class="btn magnetic" id="hero-btn">
+                    <span data-text="Explore Projects">Explore Projects</span>
+                </a>
             </div>
-            <div class="hero-profile reveal delay" id="tilt-card">
-                <div class="profile-container">
-                    <div class="profile-layer profile-layer-bg"></div>
-                    <div class="profile-layer profile-layer-main">
-                        <div class="profile-img-wrapper">
-                            <img src="assets/shawn.png" alt="Shawn" class="profile-img-cutout">
+            <div class="hero-visual" id="tilt-area">
+                <div class="morph-frame" id="morph-frame">
+                    <div class="morph-bg"></div>
+                    <img src="assets/shawn.png" alt="Shawn" class="morph-img">
+                </div>
+                <div class="hero-status">
+                    <span class="status-dot"></span>
+                    Available for work
+                </div>
+            </div>
+        </section>
+
+        <section id="work" class="work">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>Selected Work</h2>
+            </div>
+            <div class="work-grid">
+                <div class="work-card" data-index="0">
+                    <div class="work-visual">
+                        <div class="work-placeholder" style="background:#1a1a24"></div>
+                    </div>
+                    <div class="work-info">
+                        <span class="work-tag">Web App</span>
+                        <h3>Project Alpha</h3>
+                        <p>A full-stack platform built with React, Node.js, and PostgreSQL.</p>
+                        <div class="work-footer">
+                            <span class="work-link">View Case Study</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 16L16 4M16 4H8M16 4V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card" data-index="1">
+                    <div class="work-visual">
+                        <div class="work-placeholder" style="background:#1a1a24"></div>
+                    </div>
+                    <div class="work-info">
+                        <span class="work-tag">Design</span>
+                        <h3>Project Beta</h3>
+                        <p>Interactive dashboard with real-time data visualization and analytics.</p>
+                        <div class="work-footer">
+                            <span class="work-link">View Case Study</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 16L16 4M16 4H8M16 4V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-card" data-index="2">
+                    <div class="work-visual">
+                        <div class="work-placeholder" style="background:#1a1a24"></div>
+                    </div>
+                    <div class="work-info">
+                        <span class="work-tag">Platform</span>
+                        <h3>Project Gamma</h3>
+                        <p>Scalable API service handling millions of requests with sub-50ms latency.</p>
+                        <div class="work-footer">
+                            <span class="work-link">View Case Study</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 16L16 4M16 4H8M16 4V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="work" class="work hidden">
-            <h2>Selected Work</h2>
-            <div class="card-grid">
-                <div class="brutal-card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <span class="card-tag">Web Application</span>
-                        <h3>Project One</h3>
-                        <p>Full-stack web application built with a focus on clean architecture and user experience.</p>
-                        <a href="#" class="card-btn magnetic-btn">View Project</a>
-                    </div>
-                </div>
-
-                <div class="brutal-card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <span class="card-tag">Interface Design</span>
-                        <h3>Project Two</h3>
-                        <p>Interactive dashboard with emphasis on data visualization and responsive layouts.</p>
-                        <a href="#" class="card-btn magnetic-btn">View Project</a>
-                    </div>
-                </div>
-
-                <div class="brutal-card">
-                    <div class="card-image"></div>
-                    <div class="card-content">
-                        <span class="card-tag">Platform</span>
-                        <h3>Project Three</h3>
-                        <p>Scalable platform designed for performance, reliability, and clean maintainable code.</p>
-                        <a href="#" class="card-btn magnetic-btn">View Project</a>
-                    </div>
-                </div>
+        <section id="skills" class="skills">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>Capabilities</h2>
             </div>
-        </section>
-
-        <section id="skills" class="skills hidden">
-            <h2>Tech Stack</h2>
             <div class="skills-grid">
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">HTML / CSS</span>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" style="--pct: 92%;"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">JavaScript</span>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" style="--pct: 88%;"></div>
+                <div class="skill-ring-wrap">
+                    <svg class="skill-ring" viewBox="0 0 120 120">
+                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 92" id="ring-1"/>
+                    </svg>
+                    <div class="ring-info">
+                        <span class="ring-pct" data-target="92">0</span>
+                        <span class="ring-label">HTML / CSS</span>
                     </div>
                 </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">React</span>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" style="--pct: 82%;"></div>
+                <div class="skill-ring-wrap">
+                    <svg class="skill-ring" viewBox="0 0 120 120">
+                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 88" id="ring-2"/>
+                    </svg>
+                    <div class="ring-info">
+                        <span class="ring-pct" data-target="88">0</span>
+                        <span class="ring-label">JavaScript</span>
                     </div>
                 </div>
-                <div class="skill-item">
-                    <div class="skill-info">
-                        <span class="skill-name">Node.js</span>
+                <div class="skill-ring-wrap">
+                    <svg class="skill-ring" viewBox="0 0 120 120">
+                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 82" id="ring-3"/>
+                    </svg>
+                    <div class="ring-info">
+                        <span class="ring-pct" data-target="82">0</span>
+                        <span class="ring-label">React</span>
                     </div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" style="--pct: 78%;"></div>
+                </div>
+                <div class="skill-ring-wrap">
+                    <svg class="skill-ring" viewBox="0 0 120 120">
+                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 78" id="ring-4"/>
+                    </svg>
+                    <div class="ring-info">
+                        <span class="ring-pct" data-target="78">0</span>
+                        <span class="ring-label">Node.js</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="contact hidden">
-            <h2>Get In Touch</h2>
+        <section id="contact" class="contact">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2>Get In Touch</h2>
+            </div>
             <div class="contact-card">
-                <p>I'm currently available for freelance and full-time opportunities.</p>
-                <a href="mailto:hello@example.com" class="btn magnetic-btn">Send Message</a>
+                <div class="contact-border"></div>
+                <p class="contact-text">Currently available for freelance and full-time opportunities. Let's build something remarkable.</p>
+                <div class="contact-actions">
+                    <a href="mailto:hello@example.com" class="btn magnetic primary">Send Message</a>
+                    <a href="#" class="btn magnetic outline">View Resume</a>
+                </div>
             </div>
         </section>
     </main>
