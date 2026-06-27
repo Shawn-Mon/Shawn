@@ -1,360 +1,349 @@
-// ============================================
-// 1. SCROLL PROGRESS BAR
-// ============================================
-const progressBar = document.getElementById('progress-bar');
-window.addEventListener('scroll', () => {
-    const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
-    progressBar.style.width = p + '%';
-});
+/* ─────────────────────────────────────────────
+   SHAWN PORTFOLIO — script.js
+   Neural net canvas · Custom cursor · Role switcher
+   Scroll animations · Magnetic buttons · Stats counter
+───────────────────────────────────────────── */
 
-// ============================================
-// 2. NAVBAR — SCROLL BEHAVIOR + ACTIVE LINK
-// ============================================
-const navbar = document.getElementById('navbar');
-const sections = document.querySelectorAll('section');
-const navLinks = document.querySelectorAll('.nav-link');
+// ─── SCROLL PROGRESS ───────────────────────
+const scrollBar = document.getElementById('scrollBar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  scrollBar.style.width = pct + '%';
+}, { passive: true });
+
+// ─── NAV SCROLL + ACTIVE ───────────────────
+const nav = document.getElementById('nav');
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nl');
 
 function updateNav() {
-    const scrollY = window.scrollY;
-    navbar.classList.toggle('scrolled', scrollY > 50);
-
-    let current = '';
-    sections.forEach(sec => {
-        const top = sec.offsetTop - 150;
-        const bottom = top + sec.offsetHeight;
-        if (scrollY >= top && scrollY < bottom) current = sec.id;
-    });
-
-    navLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-    });
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+  let current = '';
+  sections.forEach(sec => {
+    if (window.scrollY >= sec.offsetTop - 160) current = sec.id;
+  });
+  navLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
 }
-window.addEventListener('scroll', updateNav);
+window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
 
-// ============================================
-// 3. CUSTOM CURSOR WITH TRAIL
-// ============================================
-const dot = document.querySelector('.cursor-dot');
-const trail = document.querySelector('.cursor-trail');
-let mx = 0, my = 0;
-let dotX = 0, dotY = 0;
-const trailDots = [];
-const trailCount = 8;
+// ─── SMOOTH SCROLL ─────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
 
-for (let i = 0; i < trailCount; i++) {
-    const d = document.createElement('div');
-    d.className = 'trail-dot';
-    d.style.opacity = 1 - i / trailCount;
-    d.style.transform = `scale(${1 - i * 0.1})`;
-    trail.appendChild(d);
-    trailDots.push({ el: d, x: -100, y: -100 });
-}
+// ─── CUSTOM CURSOR ─────────────────────────
+const ring = document.getElementById('cursorRing');
+const dot  = document.getElementById('cursorDot');
+let mx = -200, my = -200;
+let rx = -200, ry = -200;
 
-let frameCount = 0;
 window.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    frameCount++;
+  mx = e.clientX; my = e.clientY;
+  dot.style.transform = `translate(${mx - 2.5}px, ${my - 2.5}px)`;
+}, { passive: true });
+
+function animRing() {
+  rx += (mx - rx) * 0.1;
+  ry += (my - ry) * 0.1;
+  ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+document.querySelectorAll('a, button, .tp, .wcard').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
 });
 
-function animCursor() {
-    dotX += (mx - dotX) * 0.35;
-    dotY += (my - dotY) * 0.35;
-    dot.style.transform = `translate(${dotX - 3}px, ${dotY - 3}px)`;
+// ─── NEURAL NET CANVAS ─────────────────────
+const canvas = document.getElementById('neural');
+const ctx    = canvas.getContext('2d');
+let W, H;
+let particles = [];
+let mouse = { x: null, y: null };
 
-    trailDots[0].x += (mx - trailDots[0].x) * 0.25;
-    trailDots[0].y += (my - trailDots[0].y) * 0.25;
-    for (let i = 1; i < trailCount; i++) {
-        trailDots[i].x += (trailDots[i - 1].x - trailDots[i].x) * 0.35;
-        trailDots[i].y += (trailDots[i - 1].y - trailDots[i].y) * 0.35;
-    }
-    trailDots.forEach(d => {
-        d.el.style.transform = `translate(${d.x - 1.5}px, ${d.y - 1.5}px)`;
-    });
+const PARTICLE_COUNT = 90;
+const MAX_DIST = 130;
+const COLORS = ['124,58,237', '232,121,249', '34,211,238', '163,230,53'];
 
-    requestAnimationFrame(animCursor);
+function resizeCanvas() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
 }
-animCursor();
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
 
-// ============================================
-// 4. SCRAMBLE TEXT EFFECT
-// ============================================
-const scrambleEl = document.getElementById('scramble');
-const phrases = ['Full-Stack Developer', 'UI Engineer', 'Creative Developer', 'Problem Solver', 'Code Artisan'];
-let pi = 0, frame = 0, resolving = false;
-const chars = '!<>-_\\/[]{}—=+*^?#________';
-
-function scrambleText() {
-    const target = phrases[pi];
-    const len = target.length;
-    const progress = Math.min(frame / 30, 1);
-
-    let output = '';
-    for (let i = 0; i < len; i++) {
-        if (i < Math.floor(progress * len)) {
-            output += target[i];
-        } else {
-            output += chars[Math.floor(Math.random() * chars.length)];
-        }
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x  = Math.random() * W;
+    this.y  = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.r  = Math.random() * 1.8 + 0.5;
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.alpha = Math.random() * 0.5 + 0.2;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    // Mouse repulsion
+    if (mouse.x !== null) {
+      const dx = this.x - mouse.x;
+      const dy = this.y - mouse.y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < 100) {
+        const force = (100 - d) / 100 * 0.8;
+        this.vx += (dx / d) * force;
+        this.vy += (dy / d) * force;
+      }
     }
-    scrambleEl.textContent = output;
-
-    if (progress < 1) {
-        frame++;
-        requestAnimationFrame(scrambleText);
-    } else {
-        setTimeout(() => {
-            pi = (pi + 1) % phrases.length;
-            frame = 0;
-            requestAnimationFrame(scrambleText);
-        }, 2500);
-    }
-}
-scrambleText();
-
-// ============================================
-// 5. TEXT SCRAMBLE ON HEADING HOVER
-// ============================================
-document.querySelectorAll('.section-header h2').forEach(h2 => {
-    const original = h2.textContent;
-    h2.addEventListener('mouseenter', () => {
-        let count = 0;
-        const interval = setInterval(() => {
-            let s = '';
-            for (let i = 0; i < original.length; i++) {
-                s += chars[Math.floor(Math.random() * chars.length)];
-            }
-            h2.textContent = s;
-            count++;
-            if (count > 8) {
-                clearInterval(interval);
-                h2.textContent = original;
-            }
-        }, 40);
-    });
-});
-
-// ============================================
-// 6. 3D TILT ON HERO VISUAL
-// ================ ============================
-const tiltArea = document.getElementById('tilt-area');
-const morphFrame = document.getElementById('morph-frame');
-
-if (tiltArea && morphFrame) {
-    tiltArea.addEventListener('mousemove', e => {
-        const r = tiltArea.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        morphFrame.style.transform = `perspective(800px) rotateY(${x * 12}deg) rotateX(${y * -8}deg)`;
-    });
-    tiltArea.addEventListener('mouseleave', () => {
-        morphFrame.style.transform = 'perspective(800px) rotateY(0) rotateX(0)';
-    });
+    // Dampen
+    this.vx *= 0.99;
+    this.vy *= 0.99;
+    // Wrap
+    if (this.x < 0) this.x = W;
+    if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H;
+    if (this.y > H) this.y = 0;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+    ctx.fill();
+  }
 }
 
-// ============================================
-// 7. MAGNETIC BUTTONS
-// ============================================
-document.querySelectorAll('.magnetic').forEach(btn => {
-    btn.addEventListener('mousemove', e => {
-        const r = btn.getBoundingClientRect();
-        const x = e.clientX - r.left - r.width / 2;
-        const y = e.clientY - r.top - r.height / 2;
-        btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+function initParticles() {
+  particles = Array.from({ length: PARTICLE_COUNT }, () => new Particle());
+}
+initParticles();
+
+window.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+}, { passive: true });
+
+function drawNeural() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < MAX_DIST) {
+        const opacity = (1 - d / MAX_DIST) * 0.18;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        // Color blend
+        const ci = particles[i].color;
+        ctx.strokeStyle = `rgba(${ci},${opacity})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+    }
+    particles[i].update();
+    particles[i].draw();
+  }
+
+  // Draw mouse halo
+  if (mouse.x !== null) {
+    const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 120);
+    grad.addColorStop(0, 'rgba(124,58,237,0.06)');
+    grad.addColorStop(1, 'rgba(124,58,237,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  requestAnimationFrame(drawNeural);
+}
+drawNeural();
+
+// ─── ROLE SWITCHER ─────────────────────────
+const roles = document.querySelectorAll('.role');
+let roleIdx = 0;
+
+function switchRole() {
+  const current = roles[roleIdx];
+  const nextIdx = (roleIdx + 1) % roles.length;
+  const next    = roles[nextIdx];
+
+  current.style.transition = 'all 0.45s cubic-bezier(0.22,1,0.36,1)';
+  current.style.opacity    = '0';
+  current.style.transform  = 'translateY(-100%)';
+
+  setTimeout(() => {
+    current.classList.remove('active');
+    current.style.cssText = '';
+
+    next.classList.add('active');
+    next.style.opacity   = '0';
+    next.style.transform = 'translateY(100%)';
+    next.style.position  = 'relative';
+
+    requestAnimationFrame(() => {
+      next.style.transition = 'all 0.45s cubic-bezier(0.22,1,0.36,1)';
+      next.style.opacity    = '1';
+      next.style.transform  = 'translateY(0)';
     });
-    btn.addEventListener('mouseleave', () => {
-        btn.style.transform = '';
-    });
+
+    roleIdx = nextIdx;
+  }, 450);
+}
+
+setInterval(switchRole, 2600);
+
+// ─── MAGNETIC BUTTONS ──────────────────────
+document.querySelectorAll('.mag').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width / 2;
+    const y = e.clientY - r.top  - r.height / 2;
+    el.style.transform = `translate(${x * 0.22}px, ${y * 0.22}px)`;
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+    el.style.transform  = '';
+    setTimeout(() => { el.style.transition = ''; }, 500);
+  });
 });
 
-// ============================================
-// 8. WORK CARD TILT
-// ============================================
-document.querySelectorAll('.work-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-        const r = card.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform = `perspective(800px) rotateY(${x * 4}deg) rotateX(${y * -3}deg)`;
-    });
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(800px) rotateY(0) rotateX(0)';
-    });
-});
-
-// ============================================
-// 9. SKILL RING COUNTER ANIMATION
-// ============================================
-const skillsSection = document.querySelector('.skills');
-const ringPcts = document.querySelectorAll('.ring-pct');
-
-const ringObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-rings');
-            ringPcts.forEach(el => {
-                const target = parseInt(el.dataset.target);
-                let current = 0;
-                const step = Math.ceil(target / 40);
-                const interval = setInterval(() => {
-                    current += step;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(interval);
-                    }
-                    el.textContent = current;
-                }, 30);
-            });
-            ringObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.3 });
-
-if (skillsSection) ringObserver.observe(skillsSection);
-
-// ============================================
-// 10. STAGGERED REVEAL — SECTION CHILDREN
-// ============================================
+// ─── INTERSECTION OBSERVER (REVEAL) ────────
 const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const items = entry.target.querySelectorAll('.work-card, .skill-ring-wrap, .contact-card');
-            items.forEach((el, i) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                setTimeout(() => {
-                    el.style.transition = 'all 0.6s cubic-bezier(0.22,1,0.36,1)';
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, 150 * i);
-            });
-            revealObserver.unobserve(entry.target);
-        }
-    });
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal, .wcard, .skill-domain').forEach(el => {
+  revealObserver.observe(el);
+});
+
+// Work cards stagger
+document.querySelectorAll('.wcard').forEach((card, i) => {
+  card.style.transitionDelay = `${i * 0.08}s`;
+  card.style.opacity    = '0';
+  card.style.transform  = 'translateY(30px)';
+  card.style.transition = `opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1), border-color 0.4s, box-shadow 0.4s`;
+});
+
+const cardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity   = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
 }, { threshold: 0.1 });
 
-document.querySelectorAll('.work, .skills, .contact').forEach(s => revealObserver.observe(s));
+document.querySelectorAll('.wcard').forEach(card => cardObserver.observe(card));
 
-// ============================================
-// 11. GRID BACKGROUND WITH MOUSE WARP
-// ============================================
-const canvas = document.getElementById('grid-canvas');
-const ctx = canvas.getContext('2d');
-let W, H, cols, rows;
-const spacing = 50;
-let gridPoints = [];
-let mouse = { x: -1000, y: -1000, dx: 0, dy: 0 };
-let prevMouse = { x: -1000, y: -1000 };
-
-function resizeGrid() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    cols = Math.ceil(W / spacing) + 1;
-    rows = Math.ceil(H / spacing) + 1;
-    initGrid();
-}
-resizeGrid();
-window.addEventListener('resize', resizeGrid);
-
-function initGrid() {
-    gridPoints = [];
-    for (let r = 0; r <= rows; r++) {
-        for (let c = 0; c <= cols; c++) {
-            gridPoints.push({
-                ox: c * spacing,
-                oy: r * spacing,
-                x: c * spacing,
-                y: r * spacing,
-                vx: 0, vy: 0
-            });
-        }
+// ─── SKILLS ANIMATION ──────────────────────
+const skillsSection = document.querySelector('.skills');
+const skillsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('animated');
+      skillsObserver.unobserve(entry.target);
     }
-}
+  });
+}, { threshold: 0.15 });
 
-canvas.addEventListener('mousemove', e => {
-    prevMouse.x = mouse.x;
-    prevMouse.y = mouse.y;
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    mouse.dx = mouse.x - prevMouse.x;
-    mouse.dy = mouse.y - prevMouse.y;
+if (skillsSection) skillsObserver.observe(skillsSection);
+
+// Skill domain stagger
+document.querySelectorAll('.skill-domain').forEach((el, i) => {
+  const domainObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        domainObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  domainObserver.observe(el);
 });
 
-canvas.addEventListener('mouseleave', () => {
-    mouse.x = -1000;
-    mouse.y = -1000;
+// ─── STATS COUNTER ─────────────────────────
+const statNums = document.querySelectorAll('.stat-num[data-val]');
+let statsTriggered = false;
+
+function animateCount(el, target, duration = 1500) {
+  let start = null;
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  };
+  requestAnimationFrame(step);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !statsTriggered) {
+      statsTriggered = true;
+      statNums.forEach((el, i) => {
+        setTimeout(() => {
+          animateCount(el, parseInt(el.dataset.val), 1200);
+        }, i * 200);
+      });
+    }
+  });
+}, { threshold: 0.5 });
+
+const heroStats = document.querySelector('.hero-stats');
+if (heroStats) statsObserver.observe(heroStats);
+
+// ─── SECTION TITLE GLITCH ON HOVER ─────────
+document.querySelectorAll('.sec-title').forEach(el => {
+  const chars = '!<>[]{}#?*@%';
+  let interval;
+  el.addEventListener('mouseenter', () => {
+    const orig = el.innerHTML;
+    let count = 0;
+    interval = setInterval(() => {
+      if (count > 5) { clearInterval(interval); el.innerHTML = orig; return; }
+      count++;
+    }, 50);
+  });
+  el.addEventListener('mouseleave', () => clearInterval(interval));
 });
 
-function drawGrid() {
-    ctx.clearRect(0, 0, W, H);
+// ─── WORK CARD TILT ────────────────────────
+document.querySelectorAll('.wcard').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    card.style.transform = `translateY(-4px) perspective(800px) rotateY(${x * 5}deg) rotateX(${y * -4}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
 
-    const radius = 180;
-
-    gridPoints.forEach(p => {
-        const dx = p.ox - mouse.x;
-        const dy = p.oy - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < radius) {
-            const force = (1 - dist / radius);
-            const angle = Math.atan2(dy, dx);
-            const push = force * 12;
-            const tx = p.ox + Math.cos(angle) * push;
-            const ty = p.oy + Math.sin(angle) * push;
-            p.vx += (tx - p.x) * 0.08;
-            p.vy += (ty - p.y) * 0.08;
-        }
-
-        const dx2 = p.x - mouse.x;
-        const dy2 = p.y - mouse.y;
-        const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-        if (dist2 < radius) {
-            const force2 = (1 - dist2 / radius) * 0.3;
-            p.vx += mouse.dx * force2;
-            p.vy += mouse.dy * force2;
-        }
-
-        p.vx *= 0.85;
-        p.vy *= 0.85;
-        p.x += p.vx;
-        p.y += p.vy;
-    });
-
-    ctx.strokeStyle = 'rgba(99, 102, 241, 0.07)';
-    ctx.lineWidth = 0.5;
-
-    for (let r = 0; r < rows; r++) {
-        ctx.beginPath();
-        for (let c = 0; c <= cols; c++) {
-            const idx = r * (cols + 1) + c;
-            if (c === 0) ctx.moveTo(gridPoints[idx].x, gridPoints[idx].y);
-            else ctx.lineTo(gridPoints[idx].x, gridPoints[idx].y);
-        }
-        ctx.stroke();
-    }
-
-    for (let c = 0; c < cols; c++) {
-        ctx.beginPath();
-        for (let r = 0; r <= rows; r++) {
-            const idx = r * (cols + 1) + c;
-            if (r === 0) ctx.moveTo(gridPoints[idx].x, gridPoints[idx].y);
-            else ctx.lineTo(gridPoints[idx].x, gridPoints[idx].y);
-        }
-        ctx.stroke();
-    }
-
-    requestAnimationFrame(drawGrid);
-}
-drawGrid();
-
-// ============================================
-// 12. SMOOTH SCROLL FOR NAV LINKS
-// ============================================
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-        e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
+// ─── TECH PILL INTERACTIONS ─────────────────
+const techPills = document.querySelectorAll('.tp');
+techPills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    pill.style.transition = 'all 0.1s';
+    pill.style.transform  = 'scale(0.9)';
+    setTimeout(() => { pill.style.transform = ''; }, 100);
+  });
 });

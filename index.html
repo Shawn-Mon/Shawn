@@ -1,182 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shawn — Developer</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHAWN — Code. Cut. Automate.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-    <div id="progress-bar"></div>
-    <canvas id="grid-canvas"></canvas>
-    <div class="noise"></div>
+  <!-- CURSOR -->
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
 
-    <div class="cursor-dot"></div>
-    <div class="cursor-trail"></div>
+  <!-- NEURAL NET CANVAS -->
+  <canvas id="neural"></canvas>
 
-    <nav id="navbar">
-        <div class="nav-inner">
-            <span class="nav-logo">S.</span>
-            <ul class="nav-links">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#work" class="nav-link">Work</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
+  <!-- NOISE OVERLAY -->
+  <div class="noise"></div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-bar" id="scrollBar"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#home" class="logo">
+        <span class="logo-bracket">[</span>SHAWN<span class="logo-bracket">]</span>
+      </a>
+      <div class="nav-links">
+        <a href="#home" class="nl active" data-label="home">home</a>
+        <a href="#work" class="nl" data-label="work">work</a>
+        <a href="#skills" class="nl" data-label="skills">skills</a>
+        <a href="#contact" class="nl" data-label="contact">contact</a>
+      </div>
+      <div class="nav-status">
+        <span class="status-pulse"></span>
+        <span class="status-text">Available</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section id="home" class="hero">
+    <div class="hero-bg-text">SHAWN</div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-line"></span>
+        <span class="eyebrow-tag">Portfolio 2025</span>
+      </div>
+
+      <h1 class="hero-name">
+        <span class="name-line" data-text="SHAWN">SHAWN</span>
+      </h1>
+
+      <div class="role-switcher">
+        <span class="role-prefix">I build </span>
+        <div class="role-wrap">
+          <span class="role active">the web</span>
+          <span class="role">cinematic edits</span>
+          <span class="role">AI workflows</span>
         </div>
-    </nav>
+      </div>
 
-    <main>
-        <section id="home" class="hero">
-            <div class="hero-text">
-                <p class="hero-label">Hello, I'm</p>
-                <h1 class="hero-title">
-                    <span class="letter" style="--i:0">S</span>
-                    <span class="letter" style="--i:1">h</span>
-                    <span class="letter" style="--i:2">a</span>
-                    <span class="letter" style="--i:3">w</span>
-                    <span class="letter" style="--i:4">n</span>
-                </h1>
-                <p class="hero-sub" id="scramble">Full-Stack Developer</p>
-                <a href="#work" class="btn magnetic" id="hero-btn">
-                    <span data-text="Explore Projects">Explore Projects</span>
-                </a>
-            </div>
-            <div class="hero-visual" id="tilt-area">
-                <div class="morph-frame" id="morph-frame">
-                    <div class="morph-bg"></div>
-                    <img src="assets/shawn.png" alt="Shawn" class="morph-img">
-                </div>
-                <div class="hero-status">
-                    <span class="status-dot"></span>
-                    Available for work
-                </div>
-            </div>
-        </section>
+      <p class="hero-bio">
+        Full-stack developer · Video editor · AI automation architect.<br/>
+        I turn ideas into code, footage into stories, and chaos into pipelines.
+      </p>
 
-        <section id="work" class="work">
-            <div class="section-header">
-                <span class="section-number">01</span>
-                <h2>Selected Work</h2>
-            </div>
-            <div class="work-grid">
-                <div class="work-card" data-index="0">
-                    <div class="work-visual">
-                        <div class="work-placeholder" style="background:#1a1a24"></div>
-                    </div>
-                    <div class="work-info">
-                        <span class="work-tag">Web App</span>
-                        <h3>Project Alpha</h3>
-                        <p>A full-stack platform built with React, Node.js, and PostgreSQL.</p>
-                        <div class="work-footer">
-                            <span class="work-link">View Case Study</span>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 16L16 4M16 4H8M16 4V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="work-card" data-index="1">
-                    <div class="work-visual">
-                        <div class="work-placeholder" style="background:#1a1a24"></div>
-                    </div>
-                    <div class="work-info">
-                        <span class="work-tag">Design</span>
-                        <h3>Project Beta</h3>
-                        <p>Interactive dashboard with real-time data visualization and analytics.</p>
-                        <div class="work-footer">
-                            <span class="work-link">View Case Study</span>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 16L16 4M16 4H8M16 4V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="work-card" data-index="2">
-                    <div class="work-visual">
-                        <div class="work-placeholder" style="background:#1a1a24"></div>
-                    </div>
-                    <div class="work-info">
-                        <span class="work-tag">Platform</span>
-                        <h3>Project Gamma</h3>
-                        <p>Scalable API service handling millions of requests with sub-50ms latency.</p>
-                        <div class="work-footer">
-                            <span class="work-link">View Case Study</span>
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 16L16 4M16 4H8M16 4V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <div class="hero-cta">
+        <a href="#work" class="btn-primary mag">
+          <span class="btn-text">See My Work</span>
+          <span class="btn-arrow">→</span>
+          <span class="btn-glow"></span>
+        </a>
+        <a href="#contact" class="btn-ghost mag">Get in touch</a>
+      </div>
 
-        <section id="skills" class="skills">
-            <div class="section-header">
-                <span class="section-number">02</span>
-                <h2>Capabilities</h2>
-            </div>
-            <div class="skills-grid">
-                <div class="skill-ring-wrap">
-                    <svg class="skill-ring" viewBox="0 0 120 120">
-                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
-                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 92" id="ring-1"/>
-                    </svg>
-                    <div class="ring-info">
-                        <span class="ring-pct" data-target="92">0</span>
-                        <span class="ring-label">HTML / CSS</span>
-                    </div>
-                </div>
-                <div class="skill-ring-wrap">
-                    <svg class="skill-ring" viewBox="0 0 120 120">
-                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
-                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 88" id="ring-2"/>
-                    </svg>
-                    <div class="ring-info">
-                        <span class="ring-pct" data-target="88">0</span>
-                        <span class="ring-label">JavaScript</span>
-                    </div>
-                </div>
-                <div class="skill-ring-wrap">
-                    <svg class="skill-ring" viewBox="0 0 120 120">
-                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
-                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 82" id="ring-3"/>
-                    </svg>
-                    <div class="ring-info">
-                        <span class="ring-pct" data-target="82">0</span>
-                        <span class="ring-label">React</span>
-                    </div>
-                </div>
-                <div class="skill-ring-wrap">
-                    <svg class="skill-ring" viewBox="0 0 120 120">
-                        <circle class="ring-bg" cx="60" cy="60" r="50"/>
-                        <circle class="ring-fill" cx="60" cy="60" r="50" style="--pct: 78" id="ring-4"/>
-                    </svg>
-                    <div class="ring-info">
-                        <span class="ring-pct" data-target="78">0</span>
-                        <span class="ring-label">Node.js</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num" data-val="3">0</span>
+          <span class="stat-label">Disciplines</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-val="20">0</span><span class="stat-plus">+</span>
+          <span class="stat-label">Projects Shipped</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-val="100">0</span><span class="stat-plus">%</span>
+          <span class="stat-label">Committed</span>
+        </div>
+      </div>
+    </div>
 
-        <section id="contact" class="contact">
-            <div class="section-header">
-                <span class="section-number">03</span>
-                <h2>Get In Touch</h2>
-            </div>
-            <div class="contact-card">
-                <div class="contact-border"></div>
-                <p class="contact-text">Currently available for freelance and full-time opportunities. Let's build something remarkable.</p>
-                <div class="contact-actions">
-                    <a href="mailto:hello@example.com" class="btn magnetic primary">Send Message</a>
-                    <a href="#" class="btn magnetic outline">View Resume</a>
-                </div>
-            </div>
-        </section>
-    </main>
+    <div class="hero-scroll-hint">
+      <span class="scroll-line"></span>
+      <span class="scroll-label">scroll</span>
+    </div>
+  </section>
 
-    <script src="script.js"></script>
+  <!-- ══════════════ WORK ══════════════ -->
+  <section id="work" class="work">
+    <div class="section-head">
+      <span class="sec-tag">// selected work</span>
+      <h2 class="sec-title">What I've <em>Built</em></h2>
+    </div>
+
+    <div class="work-grid">
+
+      <!-- Card 1 -->
+      <div class="wcard" data-cat="Dev">
+        <div class="wcard-visual wv-1">
+          <div class="wcard-noise"></div>
+          <div class="wcard-gfx">
+            <div class="code-lines">
+              <div class="cl cl1"></div>
+              <div class="cl cl2"></div>
+              <div class="cl cl3"></div>
+              <div class="cl cl4"></div>
+              <div class="cl cl5"></div>
+            </div>
+            <div class="floating-tag ft1">React</div>
+            <div class="floating-tag ft2">Node</div>
+            <div class="floating-tag ft3">Postgres</div>
+          </div>
+        </div>
+        <div class="wcard-body">
+          <span class="wcard-cat">Full-Stack · Web App</span>
+          <h3 class="wcard-title">Project Alpha</h3>
+          <p class="wcard-desc">End-to-end SaaS platform built on React, Node.js & PostgreSQL — auth, dashboard, real-time sync.</p>
+          <div class="wcard-footer">
+            <div class="wcard-tags">
+              <span>React</span><span>Node.js</span><span>PostgreSQL</span>
+            </div>
+            <a href="#" class="wcard-link">View →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="wcard wcard-wide" data-cat="Video">
+        <div class="wcard-visual wv-2">
+          <div class="wcard-noise"></div>
+          <div class="wcard-gfx">
+            <div class="timeline-gfx">
+              <div class="tl-track"><div class="tl-clip tc1"></div></div>
+              <div class="tl-track"><div class="tl-clip tc2"></div></div>
+              <div class="tl-track"><div class="tl-clip tc3"></div></div>
+              <div class="tl-play">▶</div>
+            </div>
+          </div>
+        </div>
+        <div class="wcard-body">
+          <span class="wcard-cat">Video · Motion</span>
+          <h3 class="wcard-title">Cinematic Edit Reel</h3>
+          <p class="wcard-desc">Brand films and social reels — colour grading, motion graphics, multi-cam cuts that hit harder.</p>
+          <div class="wcard-footer">
+            <div class="wcard-tags">
+              <span>Premiere</span><span>After Effects</span><span>DaVinci</span>
+            </div>
+            <a href="#" class="wcard-link">Watch →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="wcard" data-cat="AI">
+        <div class="wcard-visual wv-3">
+          <div class="wcard-noise"></div>
+          <div class="wcard-gfx">
+            <div class="flow-gfx">
+              <div class="flow-node fn0">Trigger</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node fn1">GPT-4</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node fn2">Output</div>
+            </div>
+          </div>
+        </div>
+        <div class="wcard-body">
+          <span class="wcard-cat">AI · Automation</span>
+          <h3 class="wcard-title">AI Workflow Engine</h3>
+          <p class="wcard-desc">n8n + OpenAI pipelines automating content, data processing & client reporting — zero manual work.</p>
+          <div class="wcard-footer">
+            <div class="wcard-tags">
+              <span>n8n</span><span>OpenAI</span><span>Zapier</span>
+            </div>
+            <a href="#" class="wcard-link">View →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="wcard" data-cat="Dev">
+        <div class="wcard-visual wv-4">
+          <div class="wcard-noise"></div>
+          <div class="wcard-gfx">
+            <div class="dashboard-gfx">
+              <div class="dash-bar" style="--h:60%"></div>
+              <div class="dash-bar" style="--h:85%"></div>
+              <div class="dash-bar" style="--h:45%"></div>
+              <div class="dash-bar" style="--h:95%"></div>
+              <div class="dash-bar" style="--h:70%"></div>
+              <div class="dash-line"></div>
+            </div>
+          </div>
+        </div>
+        <div class="wcard-body">
+          <span class="wcard-cat">Interface · Analytics</span>
+          <h3 class="wcard-title">Live Dashboard</h3>
+          <p class="wcard-desc">Real-time analytics UI with WebSocket updates, custom charts & sub-50ms API response.</p>
+          <div class="wcard-footer">
+            <div class="wcard-tags">
+              <span>TypeScript</span><span>D3.js</span><span>WebSocket</span>
+            </div>
+            <a href="#" class="wcard-link">View →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════ SKILLS ══════════════ -->
+  <section id="skills" class="skills">
+    <div class="section-head">
+      <span class="sec-tag">// capabilities</span>
+      <h2 class="sec-title">My <em>Stack</em></h2>
+    </div>
+
+    <div class="skills-universe">
+
+      <div class="skill-domain" id="sd-dev">
+        <div class="domain-header">
+          <span class="domain-icon">⌨</span>
+          <h3>Development</h3>
+        </div>
+        <div class="skill-bars">
+          <div class="sbar" data-pct="92">
+            <div class="sbar-label"><span>HTML / CSS</span><span class="sbar-pct">92%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:92%"></div></div>
+          </div>
+          <div class="sbar" data-pct="88">
+            <div class="sbar-label"><span>JavaScript / TS</span><span class="sbar-pct">88%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:88%"></div></div>
+          </div>
+          <div class="sbar" data-pct="82">
+            <div class="sbar-label"><span>React / Next.js</span><span class="sbar-pct">82%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:82%"></div></div>
+          </div>
+          <div class="sbar" data-pct="78">
+            <div class="sbar-label"><span>Node.js / APIs</span><span class="sbar-pct">78%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:78%"></div></div>
+          </div>
+          <div class="sbar" data-pct="70">
+            <div class="sbar-label"><span>PostgreSQL</span><span class="sbar-pct">70%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:70%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-domain" id="sd-video">
+        <div class="domain-header">
+          <span class="domain-icon">🎬</span>
+          <h3>Video Editing</h3>
+        </div>
+        <div class="skill-bars">
+          <div class="sbar" data-pct="90">
+            <div class="sbar-label"><span>Premiere Pro</span><span class="sbar-pct">90%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:90%"></div></div>
+          </div>
+          <div class="sbar" data-pct="80">
+            <div class="sbar-label"><span>After Effects</span><span class="sbar-pct">80%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:80%"></div></div>
+          </div>
+          <div class="sbar" data-pct="75">
+            <div class="sbar-label"><span>DaVinci Resolve</span><span class="sbar-pct">75%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:75%"></div></div>
+          </div>
+          <div class="sbar" data-pct="68">
+            <div class="sbar-label"><span>Motion Graphics</span><span class="sbar-pct">68%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:68%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-domain" id="sd-ai">
+        <div class="domain-header">
+          <span class="domain-icon">⚡</span>
+          <h3>AI &amp; Automation</h3>
+        </div>
+        <div class="skill-bars">
+          <div class="sbar" data-pct="85">
+            <div class="sbar-label"><span>n8n / Make</span><span class="sbar-pct">85%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:85%"></div></div>
+          </div>
+          <div class="sbar" data-pct="82">
+            <div class="sbar-label"><span>OpenAI APIs</span><span class="sbar-pct">82%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:82%"></div></div>
+          </div>
+          <div class="sbar" data-pct="76">
+            <div class="sbar-label"><span>LangChain</span><span class="sbar-pct">76%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:76%"></div></div>
+          </div>
+          <div class="sbar" data-pct="70">
+            <div class="sbar-label"><span>Prompt Engineering</span><span class="sbar-pct">70%</span></div>
+            <div class="sbar-track"><div class="sbar-fill" style="--p:70%"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating tech pills -->
+    <div class="tech-cloud">
+      <span class="tp">Python</span>
+      <span class="tp tp-big">React</span>
+      <span class="tp">Figma</span>
+      <span class="tp tp-big">n8n</span>
+      <span class="tp">Docker</span>
+      <span class="tp">Git</span>
+      <span class="tp tp-big">OpenAI</span>
+      <span class="tp">Tailwind</span>
+      <span class="tp">Supabase</span>
+      <span class="tp tp-big">Premiere</span>
+      <span class="tp">Vercel</span>
+      <span class="tp">Zapier</span>
+    </div>
+  </section>
+
+  <!-- ══════════════ CONTACT ══════════════ -->
+  <section id="contact" class="contact">
+    <div class="contact-inner">
+      <div class="contact-label">
+        <span class="sec-tag">// let's connect</span>
+      </div>
+      <h2 class="contact-headline">
+        Ready to build<br/><em>something crazy?</em>
+      </h2>
+      <p class="contact-sub">Open to freelance gigs, full-time roles, collabs, or just a good conversation about tech.</p>
+
+      <div class="contact-links">
+        <a href="mailto:hello@shawn.dev" class="contact-btn mag">
+          <span class="cb-icon">✉</span>
+          <span>hello@shawn.dev</span>
+          <span class="cb-arrow">↗</span>
+        </a>
+        <a href="#" class="contact-btn mag">
+          <span class="cb-icon">◆</span>
+          <span>GitHub</span>
+          <span class="cb-arrow">↗</span>
+        </a>
+        <a href="#" class="contact-btn mag">
+          <span class="cb-icon">●</span>
+          <span>LinkedIn</span>
+          <span class="cb-arrow">↗</span>
+        </a>
+      </div>
+
+      <div class="contact-availability">
+        <span class="avail-dot"></span>
+        Currently available · Based anywhere · Shipping globally
+      </div>
+    </div>
+
+    <div class="contact-bg-text">CONNECT</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span class="footer-left">© 2025 Shawn</span>
+    <span class="footer-mid">Built with obsession.</span>
+    <span class="footer-right">Code. Cut. Automate.</span>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
