@@ -629,6 +629,17 @@ section {
   transform: scale(1.25); filter: grayscale(0) brightness(1);
 }
 
+/* ─── SKILL FALLBACK (broken image) ─────── */
+.skill-fallback {
+  width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-brutal); font-size: 0.85rem; color: var(--grey3);
+  border: 1px solid var(--border2); border-radius: 4px;
+  transition: all 0.25s var(--ease);
+}
+.skill-item:hover .skill-fallback {
+  color: var(--white); border-color: var(--white); transform: scale(1.25);
+}
+
 /* CONTACT */
 .contact {
   min-height: 100vh; justify-content: center; align-items: center;

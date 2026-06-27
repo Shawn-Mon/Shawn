@@ -431,5 +431,16 @@ document.querySelectorAll('.wcard').forEach(card => {
   });
 });
 
+// ─── SKILL IMAGE FALLBACK ───────────────────
+document.addEventListener('error', e => {
+  const img = e.target;
+  if (img.tagName === 'IMG' && img.closest('.skill-item')) {
+    const span = document.createElement('span');
+    span.className = 'skill-fallback';
+    span.textContent = (img.alt || '?').charAt(0).toUpperCase();
+    img.replaceWith(span);
+  }
+}, true);
+
 // ─── NAV STATUS ATTRACT/REPEL TEXT ──────────
 // Status already updates in the neural net section above
